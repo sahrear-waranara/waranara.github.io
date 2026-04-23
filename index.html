@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waranara — Coming Soon</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:    #0f0e0d;
+    --muted:  #5a5652;
+    --soft:   #8c877f;
+    --line:   #e4e0da;
+    --bg:     #faf9f7;
+    --accent: #2d6a4f;
+    --accent2:#40916c;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100vh;
+    padding: 0 24px;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 80px 0 60px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .tagline {
+    font-size: clamp(14px, 2vw, 17px);
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 48px;
+    font-style: italic;
+  }
+
+  .divider {
+    width: 40px;
+    height: 1.5px;
+    background: var(--line);
+    margin-bottom: 40px;
+  }
+
+  .body-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 16px;
+    max-width: 560px;
+  }
+
+  .body-text strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .dharug {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--soft);
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    max-width: 560px;
+  }
+
+  .dharug em {
+    color: var(--accent2);
+    font-style: italic;
+  }
+
+  .waitlist {
+    margin-top: 52px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .waitlist label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--soft);
+    margin-bottom: 12px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    transition: border-color 0.2s;
+  }
+
+  .input-row:focus-within {
+    border-color: var(--accent);
+  }
+
+  .input-row input {
+    flex: 1;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .input-row input::placeholder { color: var(--soft); }
+
+  .input-row button {
+    padding: 14px 22px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .input-row button:hover { background: var(--accent2); }
+
+  .privacy {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--soft);
+  }
+
+  .badges {
+    margin-top: 52px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--soft);
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--line);
+    flex-shrink: 0;
+  }
+
+  .success-msg {
+    display: none;
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  footer {
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 28px 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--soft);
+  }
+
+  footer a {
+    font-size: 12px;
+    color: var(--soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 520px) {
+    .input-row { flex-direction: column; }
+    .input-row button { border-radius: 0 0 4px 4px; }
+    .badges { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <div class="eyebrow">Sydney, Australia</div>
+
+  <h1>Waranara</h1>
+  <p class="tagline">To seek. To discover. To understand.</p>
+
+  <div class="divider"></div>
+
+  <p class="body-text">
+    Enterprise AI doesn't fail because of bad models.
+    It fails because your data has <strong>no context</strong> — fragmented across
+    Purview, Databricks, AWS Glue, Collibra, and catalogues that don't speak to each other.
+  </p>
+
+  <p class="body-text">
+    Waranara is a <strong>unified metadata context layer</strong> that brings meaning
+    to your data estate. One knowledge graph. Every catalogue.
+    Plain English answers for your AI agents and analysts.
+  </p>
+
+  <p class="dharug">
+    Named from the Dharug language of the traditional custodians of the
+    Sydney region — <em>waranara</em> means to seek.
+    That is our mission: to help your organisation find, trust,
+    and understand its data.
+    We pay our respects to Elders past and present.
+  </p>
+
+  <div class="waitlist">
+    <label for="email">Be first to know</label>
+    <div class="input-row">
+      <input type="email" id="email" placeholder="you@company.com" autocomplete="email"/>
+      <button onclick="handleSubmit()">Notify me</button>
+    </div>
+    <p class="privacy">No spam. One email when we launch.</p>
+    <p class="success-msg" id="success">✓ You're on the list. We'll be in touch.</p>
+  </div>
+
+  <div class="badges">
+    <span class="badge">Open standards</span>
+    <span class="badge">Fabric-native</span>
+    <span class="badge">DPDS · OSI · SID aligned</span>
+    <span class="badge">Arriving 2025</span>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 Waranara</p>
+  <a href="mailto:hello@waranara.com">hello@waranara.com</a>
+</footer>
+
+<script>
+function handleSubmit() {
+  const email = document.getElementById('email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('email').focus();
+    return;
+  }
+  document.getElementById('success').style.display = 'block';
+  document.getElementById('email').value = '';
+  document.querySelector('.input-row button').textContent = 'Done ✓';
+  document.querySelector('.input-row button').style.background = '#40916c';
+}
+
+document.getElementById('email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleSubmit();
+});
+</script>
+
+</body>
+</html>
