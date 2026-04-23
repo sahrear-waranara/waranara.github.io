@@ -280,7 +280,6 @@
     Sydney region — <em>waranara</em> means to seek.
     That is our mission: to help your organisation find, trust,
     and understand its data.
-    We pay our respects to Elders past and present.
   </p>
 
   <div class="waitlist">
@@ -307,20 +306,18 @@
 </footer>
 
 <script>
+const FORM_URL = 'https://forms.gle/6igzCy9gtF6MSHid7';
+
 function handleSubmit() {
-  const email = document.getElementById('email').value.trim();
-  if (!email || !email.includes('@')) {
-    document.getElementById('email').focus();
-    return;
-  }
-  document.getElementById('success').style.display = 'block';
-  document.getElementById('email').value = '';
-  document.querySelector('.input-row button').textContent = 'Done ✓';
-  document.querySelector('.input-row button').style.background = '#40916c';
+  window.open(FORM_URL, '_blank');
 }
 
 document.getElementById('email').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') handleSubmit();
+});
+
+document.getElementById('email').addEventListener('focus', function() {
+  this.placeholder = 'Click Notify me to open the signup form';
 });
 </script>
 
