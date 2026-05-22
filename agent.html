@@ -572,10 +572,11 @@
   }
 
   function formatAnswer(text) {
-    // Convert **bold** markdown to <strong>
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>');
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // **bold**
+    .replace(/\*(.*?)\*/g, '$1')                         // *text* — strip single asterisks
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
   }
 
   function scrollToBottom() {
