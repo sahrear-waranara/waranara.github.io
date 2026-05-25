@@ -479,6 +479,9 @@
 <script>
   const API_URL = 'https://data-mesh-intelligence-agent-production.up.railway.app';
 
+  // Warm up the API silently on page load
+  fetch(`${API_URL}/`).catch(() => {});
+
   const input = document.getElementById('question-input');
   const btn = document.getElementById('ask-btn');
   const messages = document.getElementById('messages');
