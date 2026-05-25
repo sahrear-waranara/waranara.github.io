@@ -510,11 +510,16 @@
     addThinking(thinkingId);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds
+
       const res = await fetch(`${API_URL}/ask`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question }),
+      signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       const data = await res.json();
       removeThinking(thinkingId);
@@ -526,8 +531,12 @@
       }
     } catch (err) {
       removeThinking(thinkingId);
-      addMessage('agent', 'Unable to reach the agent. Please check your connection and try again.');
-    }
+      if (err.name === 'AbortError') {
+        addMessage('agent', 'The query is taking longer than usual. Please try again — complex questions can take up to 30 seconds.');
+      } else {
+        addMessage('agent', 'Unable to reach the agent. Please check your connection and try again.');
+      }
+    } finally {
 
     btn.disabled = false;
     input.focus();
