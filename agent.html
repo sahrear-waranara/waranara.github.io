@@ -537,10 +537,10 @@
         addMessage('agent', 'Unable to reach the agent. Please check your connection and try again.');
       }
     } finally {
-
-    btn.disabled = false;
-    input.focus();
-    scrollToBottom();
+      btn.disabled = false;
+      input.focus();
+      scrollToBottom();
+    }
   }
 
   function addMessage(role, content) {
