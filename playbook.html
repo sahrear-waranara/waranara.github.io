@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Product Governance Playbook</title>
+<style>
+  /* ── BASE ─────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: #1e293b;
+    background: #f8fafc;
+  }
+
+  /* ── LAYOUT ───────────────────────────────────────────────────── */
+  .page-wrap { display: flex; min-height: 100vh; }
+
+  /* Sidebar TOC */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: #0f1f3d;
+    padding: 32px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #32e0c4;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+  .sidebar-logo span { display: block; color: #94a3b8; font-weight: 400; font-size: 11px; margin-top: 2px; letter-spacing: 0; text-transform: none; }
+  .toc-item {
+    display: block;
+    padding: 8px 20px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 12.5px;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .toc-item:hover { color: #fff; background: rgba(255,255,255,0.05); border-left-color: #32e0c4; }
+  .toc-item.active { color: #32e0c4; border-left-color: #32e0c4; }
+  .toc-section { padding: 16px 20px 6px; font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Main content */
+  .main { flex: 1; max-width: 900px; padding: 48px 56px 80px; }
+
+  /* ── PAGE HEADER ──────────────────────────────────────────────── */
+  .page-header {
+    background: linear-gradient(135deg, #0f1f3d 0%, #0d7377 100%);
+    border-radius: 12px;
+    padding: 40px 44px;
+    margin-bottom: 40px;
+    color: #fff;
+  }
+  .page-header .breadcrumb { font-size: 11px; color: #32e0c4; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .page-header h1 { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
+  .page-header .subtitle { font-size: 14px; color: #b2ebf2; margin-bottom: 20px; }
+  .meta-row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .meta-pill {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: #e0f7fa;
+  }
+
+  /* ── SECTION HEADINGS ─────────────────────────────────────────── */
+  .section { margin-bottom: 52px; }
+  .section-tag {
+    display: inline-block;
+    background: #0d7377;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  h2 { font-size: 22px; font-weight: 700; color: #0f1f3d; margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
+  h3 { font-size: 16px; font-weight: 700; color: #0d7377; margin: 24px 0 10px; }
+  p { margin-bottom: 14px; color: #334155; }
+
+  /* ── INFO BOXES ───────────────────────────────────────────────── */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout-body strong { display: block; margin-bottom: 4px; font-size: 13.5px; }
+  .callout-body p { margin: 0; font-size: 13.5px; }
+  .callout.info    { background: #e0f2fe; border-left: 4px solid #0369a1; }
+  .callout.tip     { background: #dcfce7; border-left: 4px solid #16a34a; }
+  .callout.warn    { background: #fef3c7; border-left: 4px solid #d97706; }
+  .callout.primary { background: #e0f7fa; border-left: 4px solid #0d7377; }
+
+  /* ── CARDS ────────────────────────────────────────────────────── */
+  .card-grid { display: grid; gap: 16px; margin: 20px 0; }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .card .card-icon { font-size: 26px; margin-bottom: 10px; }
+  .card .card-title { font-size: 14px; font-weight: 700; color: #0f1f3d; margin-bottom: 6px; }
+  .card .card-body  { font-size: 13px; color: #475569; line-height: 1.5; }
+  .card.teal-top    { border-top: 3px solid #0d7377; }
+  .card.warn-top    { border-top: 3px solid #e05c2a; }
+  .card.green-top   { border-top: 3px solid #16a34a; }
+  .card.navy-top    { border-top: 3px solid #0f1f3d; }
+
+  /* ── LIFECYCLE FLOW ───────────────────────────────────────────── */
+  .lifecycle {
+    display: flex;
+    gap: 0;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+  .lc-stage {
+    flex: 1;
+    min-width: 140px;
+    position: relative;
+  }
+  .lc-stage + .lc-stage::before {
+    content: "›";
+    position: absolute;
+    left: -14px;
+    top: 22px;
+    font-size: 22px;
+    color: #94a3b8;
+    z-index: 1;
+  }
+  .lc-bubble {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 auto 10px;
+  }
+  .lc-label { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .lc-desc  { text-align: center; font-size: 11.5px; color: #64748b; line-height: 1.4; padding: 0 4px; }
+  .lc-actor { text-align: center; font-size: 10px; color: #0d7377; font-weight: 600; margin-top: 6px; }
+
+  /* ── CONVERSATION EXAMPLE ─────────────────────────────────────── */
+  .conversation { background: #0d1a2e; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .chat-msg { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+  .chat-msg.agent { flex-direction: row; }
+  .chat-msg.user  { flex-direction: row-reverse; }
+  .chat-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .chat-msg.agent .chat-avatar { background: #0d7377; }
+  .chat-msg.user  .chat-avatar { background: #1e3a5f; }
+  .chat-bubble { max-width: 72%; padding: 9px 14px; border-radius: 10px; font-size: 13px; line-height: 1.45; }
+  .chat-msg.agent .chat-bubble { background: #0d7377; color: #e0f7fa; border-bottom-left-radius: 3px; }
+  .chat-msg.user  .chat-bubble { background: #1e3a5f; color: #b2ebf2; border-bottom-right-radius: 3px; }
+  .chat-name { font-size: 10px; color: #64748b; margin-top: 4px; }
+  .chat-msg.user .chat-name { text-align: right; }
+
+  /* ── TABLES ───────────────────────────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead tr { background: #0f1f3d; color: #fff; }
+  thead th { padding: 11px 14px; text-align: left; font-weight: 600; font-size: 12px; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody tr:hover { background: #e0f2fe; }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: #15803d; }
+  .badge.teal   { background: #ccfbf1; color: #0d7377; }
+  .badge.warn   { background: #fef3c7; color: #92400e; }
+  .badge.slate  { background: #f1f5f9; color: #475569; }
+  .badge.navy   { background: #e0e7ff; color: #3730a3; }
+
+  /* ── STEP LIST ────────────────────────────────────────────────── */
+  .step-list { margin: 20px 0; }
+  .step-item { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #0d7377; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .step-content .step-title { font-size: 14px; font-weight: 700; color: #0f1f3d; margin-bottom: 4px; }
+  .step-content p { margin: 0; font-size: 13.5px; }
+
+  /* ── CODE BLOCK ───────────────────────────────────────────────── */
+  .code-block {
+    background: #0d1a2e;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    overflow-x: auto;
+    font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #e2e8f0;
+  }
+  .code-block .comment { color: #64748b; }
+  .code-block .key     { color: #32e0c4; }
+  .code-block .val     { color: #86efac; }
+  .code-block .str     { color: #fcd34d; }
+
+  /* ── MATURITY STAGES ──────────────────────────────────────────── */
+  .maturity-bar { margin: 20px 0; }
+  .maturity-row {
+    display: flex;
+    gap: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+  }
+  .maturity-label { width: 130px; min-width: 130px; padding: 12px 16px; font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+  .maturity-details { flex: 1; padding: 12px 16px; background: #fff; }
+  .maturity-details .score { font-size: 12px; font-weight: 700; color: #0d7377; margin-bottom: 3px; }
+  .maturity-details .desc  { font-size: 12.5px; color: #475569; }
+
+  /* ── GATE FLOW ────────────────────────────────────────────────── */
+  .gate-flow { margin: 20px 0; }
+  .gate-item {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+  }
+  .gate-num { width: 90px; background: #0f1f3d; color: #32e0c4; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; line-height: 1.3; }
+  .gate-body { flex: 1; padding: 12px 16px; background: #fff; }
+  .gate-body strong { display: block; font-size: 13px; color: #0f1f3d; margin-bottom: 3px; }
+  .gate-body p { font-size: 12.5px; color: #475569; margin: 0; }
+  .gate-who { width: 150px; background: #f8fafc; display: flex; align-items: center; justify-content: center; padding: 10px; font-size: 12px; color: #0d7377; font-weight: 600; text-align: center; border-left: 1px solid #e2e8f0; }
+
+  /* ── DQ GRID ──────────────────────────────────────────────────── */
+  .dq-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+  .dq-tile { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; border-top: 3px solid #0d7377; }
+  .dq-tile .dim-name { font-size: 13px; font-weight: 700; color: #0f1f3d; margin-bottom: 4px; }
+  .dq-tile .dim-example { font-size: 11.5px; color: #64748b; }
+  .dq-tile .dim-q { font-size: 11px; color: #0d7377; font-style: italic; margin-top: 4px; }
+
+  /* ── FIELD WEIGHT TABLE ───────────────────────────────────────── */
+  .mandatory-yes { color: #16a34a; font-weight: 700; }
+  .mandatory-no  { color: #94a3b8; }
+
+  /* ── ARCHITECTURE COLS ────────────────────────────────────────── */
+  .arch-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+  .arch-col { border-radius: 8px; overflow: hidden; }
+  .arch-col-header { padding: 10px 14px; font-size: 11px; font-weight: 700; color: #fff; text-align: center; }
+  .arch-col-body { background: #fff; border: 1px solid #e2e8f0; border-top: 0; padding: 12px 14px; }
+  .arch-col-body li { font-size: 12px; color: #334155; margin-bottom: 6px; list-style: none; padding-left: 14px; position: relative; }
+  .arch-col-body li::before { content: "·"; position: absolute; left: 4px; color: #0d7377; }
+
+  /* ── COUNCIL AGENDA ───────────────────────────────────────────── */
+  .agenda-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+  .agenda-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; }
+  .agenda-item .agenda-icon { font-size: 22px; margin-bottom: 8px; }
+  .agenda-item .agenda-title { font-size: 13.5px; font-weight: 700; color: #0f1f3d; margin-bottom: 4px; }
+  .agenda-item .agenda-body  { font-size: 12.5px; color: #475569; }
+
+  /* ── ROADMAP ──────────────────────────────────────────────────── */
+  .roadmap { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0; }
+  .rm-col { border-radius: 8px; overflow: hidden; }
+  .rm-header { padding: 10px 16px; font-size: 12px; font-weight: 700; color: #fff; }
+  .rm-body { background: #fff; border: 1px solid #e2e8f0; border-top: 0; padding: 14px 16px; }
+  .rm-body li { font-size: 12.5px; color: #334155; margin-bottom: 8px; padding-left: 18px; position: relative; list-style: none; }
+  .rm-body li::before { content: "→"; position: absolute; left: 0; color: #0d7377; font-weight: 700; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { padding: 24px 20px; }
+    .card-grid.cols-3, .card-grid.cols-2,
+    .arch-cols, .dq-grid, .agenda-grid, .roadmap { grid-template-columns: 1fr; }
+    .lifecycle { flex-direction: column; }
+    .lc-stage + .lc-stage::before { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- ── SIDEBAR ────────────────────────────────────────────────── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    Data Product Governance
+    <span>Playbook v1.0 — May 2026</span>
+  </div>
+  <div class="toc-section">Overview</div>
+  <a class="toc-item" href="#overview">Purpose & Scope</a>
+  <a class="toc-item" href="#problem">The Problem</a>
+  <a class="toc-item" href="#vision">Vision — Federated Governance</a>
+
+  <div class="toc-section">The Lifecycle</div>
+  <a class="toc-item" href="#lifecycle">End-to-End Flow</a>
+  <a class="toc-item" href="#draft">Stage 1: Draft</a>
+  <a class="toc-item" href="#incomplete">Stage 2: Incomplete → Agent Loop</a>
+  <a class="toc-item" href="#inreview">Stage 3: In-Review</a>
+  <a class="toc-item" href="#published">Stage 4: Published</a>
+  <a class="toc-item" href="#monitored">Stage 5: Monitored</a>
+
+  <div class="toc-section">Governance Standards</div>
+  <a class="toc-item" href="#standard">ODPS v4.0 Standard</a>
+  <a class="toc-item" href="#fieldweights">Field Weights & Config</a>
+  <a class="toc-item" href="#maturity">Maturity Stages</a>
+
+  <div class="toc-section">The Council</div>
+  <a class="toc-item" href="#council">Why a Council?</a>
+  <a class="toc-item" href="#membership">Membership & Cadence</a>
+  <a class="toc-item" href="#agenda">Monthly Agenda</a>
+
+  <div class="toc-section">Data Quality</div>
+  <a class="toc-item" href="#dq">DQ Integration — Databricks</a>
+  <a class="toc-item" href="#dqdimensions">8 ODPS DQ Dimensions</a>
+
+  <div class="toc-section">Architecture</div>
+  <a class="toc-item" href="#architecture">Technology Stack</a>
+  <a class="toc-item" href="#approvals">Human Approval Gates</a>
+  <a class="toc-item" href="#roadmap">Delivery Roadmap</a>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="breadcrumb">Data Mesh Programme · Governance</div>
+    <h1>Data Product Governance Playbook</h1>
+    <div class="subtitle">From Draft to Published — The End-to-End Agentic Governance Lifecycle</div>
+    <div class="meta-row">
+      <span class="meta-pill">📅 May 2026</span>
+      <span class="meta-pill">👤 Sahrear Seraj — Data &amp; AI Architect</span>
+      <span class="meta-pill">📐 ODPS v4.0</span>
+      <span class="meta-pill">🔄 Phase 2 — Active</span>
+      <span class="meta-pill">🌐 waranara.com/agent</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 1. PURPOSE & SCOPE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="overview">
+    <div class="section-tag">Overview</div>
+    <h2>Purpose &amp; Scope</h2>
+    <p>This playbook defines how data products are governed end-to-end within the data mesh programme — from the moment a domain team registers a product in Microsoft Purview, through an AI-assisted gap closure process, to formal publication and continuous quality monitoring.</p>
+    <p>It covers three interconnected concerns: the <strong>data product lifecycle</strong> (how a product moves from Draft to Published), the <strong>governance standard</strong> (ODPS v4.0 field requirements and configurable maturity thresholds), and the <strong>Data Product Governance Council</strong> (the human oversight body that owns the standard and approves publication).</p>
+
+    <div class="callout primary">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <strong>Design Principle</strong>
+        <p>Governance in a data mesh must be federated and computational — encoded in automation and tooling, not in meetings and sign-off workflows. The Data Product Intelligence Agent does the work of surfacing and closing governance gaps. The Council owns the standard. Domain teams own their products. No one owns a bottleneck.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 2. THE PROBLEM -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="problem">
+    <div class="section-tag">The Problem</div>
+    <h2>Why Traditional Data Governance Fails at Scale</h2>
+
+    <div class="card-grid cols-3">
+      <div class="card warn-top">
+        <div class="card-icon">⏳</div>
+        <div class="card-title">Speed</div>
+        <div class="card-body">A data scientist spends 2 days finding out if a dataset is approved for model training. Governance teams are a bottleneck, not an enabler.</div>
+      </div>
+      <div class="card warn-top">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Completeness</div>
+        <div class="card-body">8 of 12 data products have no assigned DataSteward. 10 of 12 have empty terms of use. Governance gaps are invisible until something goes wrong.</div>
+      </div>
+      <div class="card warn-top">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">Sustainability</div>
+        <div class="card-body">RACI matrices and approval committees do not scale to a data mesh with multiple domain teams shipping continuously.</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>The Root Cause</strong>
+        <p>Traditional governance treats compliance as a human activity — someone reviews something and approves it. At data mesh scale, that model breaks down. There are too many products, too many domains, and too much change for any committee to keep up.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 3. VISION -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="vision">
+    <div class="section-tag">Vision</div>
+    <h2>Federated Computational Governance</h2>
+    <p>The fourth data mesh principle — Federated Computational Governance — states that governance should be encoded in standards and automation, federated across domain teams, and enforced computationally. The role of a central governance function is to own the standard, not to review every product.</p>
+
+    <div class="card-grid cols-2">
+      <div class="card" style="border-left: 4px solid #ef4444; background: #fff5f5;">
+        <div class="card-title" style="color:#dc2626;">❌ Old Way — Traditional Governance</div>
+        <div class="card-body">
+          <ul style="padding-left: 18px; margin-top: 8px; color: #475569; font-size: 13px; line-height: 2;">
+            <li>Central committee reviews every data product</li>
+            <li>Data stewards fill in forms manually</li>
+            <li>Compliance checked in annual audits</li>
+            <li>Governance is a bottleneck and a delay</li>
+            <li>Domain teams resent the overhead</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="border-left: 4px solid #16a34a; background: #f0fdf4;">
+        <div class="card-title" style="color:#16a34a;">✅ New Way — Computational Governance</div>
+        <div class="card-body">
+          <ul style="padding-left: 18px; margin-top: 8px; color: #475569; font-size: 13px; line-height: 2;">
+            <li>Standards encoded in automation and tooling</li>
+            <li>AI agent surfaces and closes gaps conversationally</li>
+            <li>Compliance checked in every CI/CD pipeline run</li>
+            <li>Governance is invisible — it happens automatically</li>
+            <li>Domain teams self-serve against the standard</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 4. LIFECYCLE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="lifecycle">
+    <div class="section-tag">The Lifecycle</div>
+    <h2>End-to-End Data Product Lifecycle</h2>
+    <p>Every data product passes through five stages from creation to continuous monitoring. The AI agent is the primary driver of stages 2 and 5 — it detects gaps, closes them conversationally, and alerts on quality breaches. Humans gate stages 3 and 4.</p>
+
+    <div class="lifecycle">
+      <div class="lc-stage">
+        <div class="lc-bubble" style="background:#64748b;">1</div>
+        <div class="lc-label" style="color:#64748b;">Draft</div>
+        <div class="lc-desc">Domain team registers product via PowerApp form in Purview</div>
+        <div class="lc-actor">Domain Team</div>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-bubble" style="background:#e05c2a;">2</div>
+        <div class="lc-label" style="color:#e05c2a;">Incomplete</div>
+        <div class="lc-desc">Agent detects missing fields. Opens conversational loop with Product Owner</div>
+        <div class="lc-actor">Agent + Product Owner</div>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-bubble" style="background:#14a0a5;">3</div>
+        <div class="lc-label" style="color:#14a0a5;">In-Review</div>
+        <div class="lc-desc">All mandatory fields complete. Governance Council notified for approval</div>
+        <div class="lc-actor">Governance Council</div>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-bubble" style="background:#16a34a;">4</div>
+        <div class="lc-label" style="color:#16a34a;">Published</div>
+        <div class="lc-desc">Domain Lead approves. Product available for broad consumption and agent routing</div>
+        <div class="lc-actor">Domain Lead</div>
+      </div>
+      <div class="lc-stage">
+        <div class="lc-bubble" style="background:#0d7377;">5</div>
+        <div class="lc-label" style="color:#0d7377;">Monitored</div>
+        <div class="lc-desc">DQ pipelines run in Databricks. Breaches trigger new agent conversation loop</div>
+        <div class="lc-actor">Databricks + Agent</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 1 -->
+  <section class="section" id="draft">
+    <div class="section-tag">Stage 1</div>
+    <h2>Draft — Registration via Purview</h2>
+    <p>A domain team creates a new data product using the PowerApp form connected to Microsoft Purview. At this stage, only a minimal set of fields is required — enough to register the product's existence in the catalogue and governance graph.</p>
+
+    <h3>Minimum Fields Required at Draft</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Example Value</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>product-name</code></td><td>Customer-360</td><td>Identifies the product in the graph</td></tr>
+          <tr><td><code>domain</code></td><td>Customer Analytics Domain</td><td>Routes to the correct domain team in the graph</td></tr>
+          <tr><td><code>product-type</code></td><td>dataset</td><td>Determines access and agent routing patterns</td></tr>
+          <tr><td><code>product-owner</code></td><td>Linda Wolfe — linda.wolfe@company.com</td><td>Contact for curation agent conversations</td></tr>
+          <tr><td><code>product-status</code></td><td>Draft</td><td>Controls discoverability and consumption eligibility</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>Purview → Neo4j Sync</strong>
+        <p>The Purview JSON export is read by the ingestion pipeline and loaded into the Neo4j knowledge graph as a DataProduct node. The governance_config.yaml field mapping translates Purview custom attribute names to ODPS v4.0 field paths. A completeness score is computed on first ingestion. If mandatory fields are missing, the product enters Stage 2 immediately.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 2 -->
+  <section class="section" id="incomplete">
+    <div class="section-tag">Stage 2</div>
+    <h2>Incomplete — The Agentic Gap Closure Loop</h2>
+    <p>This is where the intelligence of the system is most visible. The Data Product Intelligence Agent runs a nightly gap scan against the knowledge graph. For each product below the publication threshold, it identifies the highest-priority missing field and initiates a conversational exchange with the Product Owner via Microsoft Teams or Slack.</p>
+
+    <h3>How the Agent Prioritises Gaps</h3>
+    <p>The agent reads <code>governance_config.yaml</code> to determine field weights and mandatory status. It always addresses mandatory fields first, in descending weight order. It asks one question per conversation turn — not a list of 12 missing fields.</p>
+
+    <h3>Example Conversation — Customer-360</h3>
+    <div class="conversation">
+      <div class="chat-msg agent">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-bubble">Hi Linda — Customer-360 is 42% complete and needs a DataSteward before it can be published. This is a mandatory field. Who on your team should be the steward?</div>
+          <div class="chat-name">Data Product Intelligence Agent</div>
+        </div>
+      </div>
+      <div class="chat-msg user">
+        <div class="chat-avatar">👤</div>
+        <div>
+          <div class="chat-bubble">That would be Priya Sharma.</div>
+          <div class="chat-name">Linda Wolfe — Product Owner</div>
+        </div>
+      </div>
+      <div class="chat-msg agent">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-bubble">Is that priya.sharma@company.com? I can see she's already in the governance graph with a DataSteward role.</div>
+          <div class="chat-name">Data Product Intelligence Agent</div>
+        </div>
+      </div>
+      <div class="chat-msg user">
+        <div class="chat-avatar">👤</div>
+        <div>
+          <div class="chat-bubble">Yes, that's right.</div>
+          <div class="chat-name">Linda Wolfe — Product Owner</div>
+        </div>
+      </div>
+      <div class="chat-msg agent">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-bubble">✓ Done — stewarded_by relationship created. Customer-360 is now at 55% completeness. Next: the SLA freshness commitment is undefined. How often is Customer-360 refreshed? e.g. daily, hourly, real-time.</div>
+          <div class="chat-name">Data Product Intelligence Agent</div>
+        </div>
+      </div>
+      <div class="chat-msg user">
+        <div class="chat-avatar">👤</div>
+        <div>
+          <div class="chat-bubble">Daily — refreshed at 2am AEST.</div>
+          <div class="chat-name">Linda Wolfe — Product Owner</div>
+        </div>
+      </div>
+      <div class="chat-msg agent">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-bubble">✓ Recorded as PT24H. Customer-360 is now at 65% completeness. I'll follow up tomorrow with the next gap. You're making great progress — 3 more mandatory fields to go before In-Review.</div>
+          <div class="chat-name">Data Product Intelligence Agent</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <strong>Design Principle — One Question Per Turn</strong>
+        <p>The agent deliberately asks one question per conversation turn. This matches how Product Owners actually work — they respond to a quick Teams message, not a form with 12 required fields. Validated responses are written back to Neo4j immediately. The agent resumes from where it left off on the next run.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 3 -->
+  <section class="section" id="inreview">
+    <div class="section-tag">Stage 3</div>
+    <h2>In-Review — Governance Council Notification</h2>
+    <p>When a data product reaches the publication threshold (default: ≥80% completeness + all mandatory fields complete), the agent automatically notifies the Governance Council. The Council reviews and either approves publication or returns the product with specific feedback.</p>
+
+    <h3>Council Notification — What It Includes</h3>
+    <div class="card-grid cols-2">
+      <div class="card teal-top">
+        <div class="card-title">Product Summary</div>
+        <div class="card-body">Product name, domain, type, completeness score, mandatory fields status, days in Incomplete stage, Product Owner contact.</div>
+      </div>
+      <div class="card teal-top">
+        <div class="card-title">Outstanding Optional Gaps</div>
+        <div class="card-body">Fields not yet completed that are not mandatory — data access endpoint, DQ rules, use cases. Council decides if these block publication.</div>
+      </div>
+      <div class="card teal-top">
+        <div class="card-title">DQ Status (if available)</div>
+        <div class="card-body">Latest DQ scores from Databricks if pipeline has run. Any active breaches are flagged — Council may defer publication until resolved.</div>
+      </div>
+      <div class="card teal-top">
+        <div class="card-title">Approval Action</div>
+        <div class="card-body">Approve — product moves to Published. Return — Council specifies which fields need resolution before re-submission.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 4 -->
+  <section class="section" id="published">
+    <div class="section-tag">Stage 4</div>
+    <h2>Published — Available for Consumption</h2>
+    <p>A Published data product is discoverable via the Data Product Intelligence Agent at <strong>waranara.com/agent</strong>, queryable by domain teams, and eligible for AI agent routing decisions (e.g. "which products are permitted for model training?").</p>
+
+    <div class="callout tip">
+      <div class="callout-icon">🌐</div>
+      <div class="callout-body">
+        <strong>Live Demo</strong>
+        <p>The agent at waranara.com/agent answers governance questions in plain English — no Purview UI, no Cypher knowledge, no ticket to the data team. Type <em>"which data products are permitted for model training?"</em> and the answer comes back in seconds, grounded in the knowledge graph.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 5 -->
+  <section class="section" id="monitored">
+    <div class="section-tag">Stage 5</div>
+    <h2>Monitored — Continuous Quality Assurance</h2>
+    <p>After publication, Databricks pipelines run DQ checks on each data product's underlying tables. Results are written to a governance Delta table and synced to the Neo4j knowledge graph nightly. The agent monitors for breaches and re-opens a conversation loop with the Product Owner when thresholds are violated.</p>
+
+    <h3>The DQ Sync Flow</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Databricks pipeline runs DQ checks</div>
+          <p>Great Expectations or Databricks Lakehouse Monitoring evaluates rules against actual table data. Example: "Are 99% of first_name values non-null in the customer profile table?"</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Results written to governance.dq_results Delta table</div>
+          <p>Each row records product_id, dimension (completeness/uniqueness/etc.), rule_name, threshold, score, passed (true/false), and measured_at timestamp.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">dq_sync.py reads results and updates Neo4j</div>
+          <p>DataQualityRule nodes are updated with current scores. Any rule where score &lt; threshold sets dq_breach = true on the node.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Agent detects breach and alerts Product Owner</div>
+          <p>Next morning the agent identifies dq_breach = true nodes and opens a Teams/Slack conversation: "Customer-360 first_name completeness dropped to 80% — below the 99% threshold. Priya, can you investigate?"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 5. STANDARD -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="standard">
+    <div class="section-tag">Governance Standard</div>
+    <h2>ODPS v4.0 — The Governing Standard</h2>
+    <p>The Open Data Product Specification v4.0 (Linux Foundation) defines the canonical structure for data product metadata. All governance fields in this playbook map to ODPS v4.0 objects. The standard is published at <a href="https://opendataproducts.org/v4.0/" style="color:#0d7377;">opendataproducts.org/v4.0</a>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ODPS v4.0 Object</th><th>Ontology Entity</th><th>What It Governs</th></tr></thead>
+        <tbody>
+          <tr><td><code>product.details</code></td><td>DataProduct</td><td>Name, version, status, visibility, type, update frequency</td></tr>
+          <tr><td><code>dataContract</code></td><td>DataContract</td><td>SLA commitments, data residency, terms of service, schema evolution policy</td></tr>
+          <tr><td><code>dataSLA</code> (11 dimensions)</td><td>DataContract (extended)</td><td>Freshness, availability, latency, retention, throughput, timeliness, observability, backup, breach notification, support hours, incident response</td></tr>
+          <tr><td><code>dataQuality</code> (8 dimensions)</td><td>DataQualityRule</td><td>Completeness, uniqueness, timeliness, validity, accuracy, consistency, accessibility, integrity</td></tr>
+          <tr><td><code>dataAccess</code></td><td>DataAccess</td><td>Endpoint URL, protocol, authentication method, format, status</td></tr>
+          <tr><td><code>dataHolder</code></td><td>Party</td><td>Product owner and steward identity, org unit, country, contact URL</td></tr>
+          <tr><td><code>dataLicensing</code></td><td>DataLicensing</td><td>Permitted uses, prohibited uses, attribution, license type</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 6. FIELD WEIGHTS -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="fieldweights">
+    <div class="section-tag">Configuration</div>
+    <h2>Configurable Field Weights — governance_config.yaml</h2>
+    <p>The governance standard is configurable without code deployment. The Data Product Governance Lead edits <code>governance_config.yaml</code> in the repository to adjust field weights, mandatory status, and publication thresholds as domain maturity evolves. Changes take effect on the agent's next nightly run.</p>
+
+    <div class="code-block">
+<span class="comment"># governance_config.yaml — Owner: Data Product Governance Lead
+# Adjust field weights and mandatory status as maturity evolves.
+# Changes take effect on next agent run — no code deployment required.</span>
+
+<span class="key">version:</span> <span class="str">"1.0"</span>
+<span class="key">publish_threshold:</span> <span class="val">80</span>          <span class="comment"># minimum score to trigger Council review</span>
+<span class="key">mandatory_block:</span> <span class="val">true</span>           <span class="comment"># mandatory=true fields block publish regardless</span>
+
+<span class="key">fields:</span>
+  - <span class="key">field:</span> <span class="str">data_steward</span>
+    <span class="key">weight:</span> <span class="val">15</span>
+    <span class="key">mandatory:</span> <span class="val">true</span>
+    <span class="key">agent_question:</span> <span class="str">"Who on your team is the Data Steward for {product_name}?"</span>
+
+  - <span class="key">field:</span> <span class="str">data_residency</span>
+    <span class="key">weight:</span> <span class="val">15</span>
+    <span class="key">mandatory:</span> <span class="val">true</span>
+    <span class="key">agent_question:</span> <span class="str">"Where must {product_name} data physically reside?"</span>
+
+  - <span class="key">field:</span> <span class="str">glossary_terms</span>
+    <span class="key">weight:</span> <span class="val">10</span>
+    <span class="key">mandatory:</span> <span class="val">false</span>    <span class="comment"># ← change to true when domain maturity allows</span>
+    <span class="key">agent_question:</span> <span class="str">"What business terms best describe {product_name}?"</span>
+    </div>
+
+    <h3>Current Field Weight Table</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>ODPS Path</th><th>Weight</th><th>Mandatory</th><th>Phase</th></tr></thead>
+        <tbody>
+          <tr><td>Data Steward</td><td><code>dataHolder.name</code></td><td>15%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>Data Residency</td><td><code>dataContract.dataResidency</code></td><td>15%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>SLA Freshness</td><td><code>dataSLA.updateFrequency</code></td><td>10%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>SLA Availability</td><td><code>dataSLA.availability</code></td><td>10%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>Terms of Use</td><td><code>dataContract.termsOfService</code></td><td>10%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>Permitted Uses</td><td><code>dataLicensing.permittedUses</code></td><td>10%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>Product Version</td><td><code>product.details.version</code></td><td>10%</td><td><span class="mandatory-yes">✓ Yes</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>Glossary Terms</td><td>—</td><td>10%</td><td><span class="mandatory-no">– No</span></td><td><span class="badge teal">Phase 1</span></td></tr>
+          <tr><td>Data Access Endpoint</td><td><code>dataAccess.endpointURL</code></td><td>5%</td><td><span class="mandatory-no">– No</span></td><td><span class="badge navy">Phase 2</span></td></tr>
+          <tr><td>DQ Rules (structured)</td><td><code>dataQuality.threshold</code></td><td>5%</td><td><span class="mandatory-no">– No</span></td><td><span class="badge navy">Phase 2</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 7. MATURITY -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="maturity">
+    <div class="section-tag">Maturity</div>
+    <h2>Data Product Maturity Stages</h2>
+    <p>Rather than a binary published/unpublished state, products progress through maturity stages. This gives domain teams a clear progression and allows products to be useful (internally visible) before they reach the full publication standard.</p>
+
+    <div class="maturity-bar">
+      <div class="maturity-row">
+        <div class="maturity-label" style="background:#64748b;">🥉 Foundation</div>
+        <div class="maturity-details">
+          <div class="score">Score: 0 – 59%</div>
+          <div class="desc">Basic identity and data residency registered. Product exists in the catalogue but is not consumable. Agent is actively closing gaps.</div>
+        </div>
+      </div>
+      <div class="maturity-row">
+        <div class="maturity-label" style="background:#0d7377;">🥈 Governed</div>
+        <div class="maturity-details">
+          <div class="score">Score: 60 – 79%</div>
+          <div class="desc">SLA and licensing defined. Suitable for internal domain consumption — teams within the same domain can use it. Not yet available for cross-domain discovery.</div>
+        </div>
+      </div>
+      <div class="maturity-row">
+        <div class="maturity-label" style="background:#16a34a;">🥇 Published</div>
+        <div class="maturity-details">
+          <div class="score">Score: ≥ 80% + all mandatory fields</div>
+          <div class="desc">Full governance. Council-approved. Available for broad consumption, cross-domain discovery, and AI agent routing decisions.</div>
+        </div>
+      </div>
+      <div class="maturity-row">
+        <div class="maturity-label" style="background:#0f1f3d;">💎 Certified</div>
+        <div class="maturity-details">
+          <div class="score">Score: ≥ 95%</div>
+          <div class="desc">Gold standard. DQ rules active with live Databricks measurements, data access endpoint configured, CDEs registered on all critical columns. Eligible for AI training and regulatory use cases.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 8. COUNCIL -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="council">
+    <div class="section-tag">Governance Council</div>
+    <h2>Why a Data Product Governance Council?</h2>
+    <p>The agent enforces the standard computationally. But someone must own the standard itself — deciding which fields are mandatory, resolving cross-domain conflicts, and providing the human judgment that machines cannot. That is the Council's role.</p>
+    <p>The Council is not a bottleneck. It does not review individual data products in detail — the agent has already validated completeness before any product reaches In-Review. The Council's job is to confirm that a product is ready for publication and to make policy decisions that apply across all domains.</p>
+
+    <div class="callout primary">
+      <div class="callout-icon">🏛️</div>
+      <div class="callout-body">
+        <strong>Council Mandate</strong>
+        <p>Own the governance standard. Set the rules the agent enforces. Approve products for publication. Escalate domain teams who are not engaging with the curation process. Review and update <code>governance_config.yaml</code> as maturity evolves.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="membership">
+    <div class="section-tag">Council — Membership</div>
+    <h2>Council Membership &amp; Operating Cadence</h2>
+
+    <div class="card-grid cols-2">
+      <div class="card navy-top">
+        <div class="card-title">Membership</div>
+        <div class="card-body">
+          <ul style="padding-left: 18px; margin-top: 8px; font-size: 13px; line-height: 2; color: #475569;">
+            <li><strong>Data Product Governance Lead</strong> — Chair</li>
+            <li>Domain Leads × 4 (one per domain)</li>
+            <li>Chief Data Officer or delegate</li>
+            <li>Data Platform Lead</li>
+            <li>Risk &amp; Compliance representative</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card navy-top">
+        <div class="card-title">Operating Cadence</div>
+        <div class="card-body">
+          <ul style="padding-left: 18px; margin-top: 8px; font-size: 13px; line-height: 2; color: #475569;">
+            <li><strong>Monthly meeting</strong> — 60 minutes</li>
+            <li>Publication approvals — asynchronous (Teams card) when queue is small</li>
+            <li>Quarterly — review governance_config.yaml threshold adjustments</li>
+            <li>As needed — escalation of stuck products (&gt;30 days in Incomplete)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="agenda">
+    <div class="section-tag">Council — Agenda</div>
+    <h2>Monthly Council Agenda</h2>
+
+    <div class="agenda-grid">
+      <div class="agenda-item">
+        <div class="agenda-icon">📊</div>
+        <div class="agenda-title">1. Maturity Dashboard Review (15 min)</div>
+        <div class="agenda-body">Review completeness scores by domain. Identify products stuck in Incomplete for more than 14 days — escalate to domain lead. Review DQ breach trends from Databricks. Celebrate products that have reached Certified.</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">✅</div>
+        <div class="agenda-title">2. Publication Approvals (20 min)</div>
+        <div class="agenda-body">Review products in In-Review status. Agent provides a completeness summary card for each. Council votes to Approve or Return with specific feedback. Target: same-week turnaround for straightforward approvals.</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">📐</div>
+        <div class="agenda-title">3. Standards Update (15 min)</div>
+        <div class="agenda-body">Review proposed changes to governance_config.yaml — new mandatory fields, weight adjustments, threshold changes. Decisions recorded and committed to the governance repo. Agent picks up changes on next nightly run.</div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-icon">🔄</div>
+        <div class="agenda-title">4. Cross-Domain Issues (10 min)</div>
+        <div class="agenda-body">Glossary term conflicts. Shared data asset ownership disputes. Lineage gaps spanning multiple domains. Agent flags these in the graph — Council resolves the policy decision, agent implements the outcome.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 9. DATA QUALITY -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="dq">
+    <div class="section-tag">Data Quality</div>
+    <h2>DQ Integration — Databricks to Knowledge Graph</h2>
+    <p>Data quality measurement happens in Databricks against actual table data. The governance graph holds the DQ policy (thresholds, dimensions, rules). <code>dq_sync.py</code> bridges the two — reading results from the governance Delta table and updating DataQualityRule nodes in Neo4j nightly.</p>
+
+    <div class="callout info">
+      <div class="callout-icon">🔑</div>
+      <div class="callout-body">
+        <strong>Two Separate Concerns — Both Visible in the Agent</strong>
+        <p>Governance completeness (is the data product metadata filled in?) and data quality (are the actual rows in the table valid?) are distinct. The agent surfaces both. A product can have perfect metadata and failing DQ — the agent knows the difference and converses accordingly.</p>
+      </div>
+    </div>
+
+    <h3>Customer-360 DQ Example</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Column / Check</th><th>Dimension</th><th>Threshold</th><th>Score</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><code>customer_id</code> — not null</td><td>Completeness</td><td>99%</td><td>100%</td><td><span class="badge green">Passing</span></td></tr>
+          <tr><td><code>first_name</code> — not null</td><td>Completeness</td><td>99%</td><td>80%</td><td><span class="badge" style="background:#fee2e2;color:#991b1b;">⚠️ Breach</span></td></tr>
+          <tr><td><code>customer_id</code> — unique</td><td>Uniqueness</td><td>100%</td><td>80%</td><td><span class="badge" style="background:#fee2e2;color:#991b1b;">⚠️ Breach</span></td></tr>
+          <tr><td><code>email</code> — valid format</td><td>Validity</td><td>98%</td><td>80%</td><td><span class="badge" style="background:#fee2e2;color:#991b1b;">⚠️ Breach</span></td></tr>
+          <tr><td>Refreshed within PT24H</td><td>Timeliness</td><td>100%</td><td>100%</td><td><span class="badge green">Passing</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px; color:#64748b;">These are <em>actual data checks</em> on the rows inside the Customer-360 tables in Databricks — not metadata about the product. Breaches trigger an automatic agent conversation with the Product Owner and Data Steward.</p>
+  </section>
+
+  <section class="section" id="dqdimensions">
+    <div class="section-tag">Data Quality</div>
+    <h2>8 ODPS v4.0 Data Quality Dimensions</h2>
+
+    <div class="dq-grid">
+      <div class="dq-tile">
+        <div class="dim-name">Completeness</div>
+        <div class="dim-example">Are first_name values populated?</div>
+        <div class="dim-q">"How many rows have null values?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Uniqueness</div>
+        <div class="dim-example">Is customer_id unique per row?</div>
+        <div class="dim-q">"How many duplicate records exist?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Timeliness</div>
+        <div class="dim-example">Was data refreshed within SLA?</div>
+        <div class="dim-q">"How old is the latest record?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Validity</div>
+        <div class="dim-example">Are email addresses well-formed?</div>
+        <div class="dim-q">"How many values fail the format rule?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Accuracy</div>
+        <div class="dim-example">Does billing_amount match source?</div>
+        <div class="dim-q">"How many values deviate from ground truth?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Consistency</div>
+        <div class="dim-example">Does status match across systems?</div>
+        <div class="dim-q">"How many cross-system conflicts exist?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Accessibility</div>
+        <div class="dim-example">Is the data access endpoint reachable?</div>
+        <div class="dim-q">"Is the endpoint returning 200 OK?"</div>
+      </div>
+      <div class="dq-tile">
+        <div class="dim-name">Integrity</div>
+        <div class="dim-example">Are foreign keys referentially intact?</div>
+        <div class="dim-q">"How many orphaned records exist?"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 10. ARCHITECTURE -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="architecture">
+    <div class="section-tag">Architecture</div>
+    <h2>Technology Stack</h2>
+
+    <div class="arch-cols">
+      <div class="arch-col">
+        <div class="arch-col-header" style="background:#1e3a5f;">Domain Layer</div>
+        <div class="arch-col-body">
+          <ul>
+            <li>PowerApp Form</li>
+            <li>Microsoft Purview</li>
+            <li>Purview JSON Export</li>
+            <li>Unity Catalog (Databricks)</li>
+            <li>DQ Pipeline Results</li>
+          </ul>
+        </div>
+      </div>
+      <div class="arch-col">
+        <div class="arch-col-header" style="background:#0d3d2e;">Governance Platform</div>
+        <div class="arch-col-body">
+          <ul>
+            <li>governance_config.yaml</li>
+            <li>ODPS v4.0 Validation</li>
+            <li>GitHub Actions CI/CD</li>
+            <li>ADLS Gen2 (handoff)</li>
+            <li>OWL/RDF Ontology v2.0</li>
+          </ul>
+        </div>
+      </div>
+      <div class="arch-col">
+        <div class="arch-col-header" style="background:#2e1a5f;">Intelligence Layer</div>
+        <div class="arch-col-body">
+          <ul>
+            <li>Neo4j Knowledge Graph</li>
+            <li>664 nodes / 637 rels</li>
+            <li>LangChain Agent</li>
+            <li>Claude Sonnet (LLM)</li>
+            <li>dq_sync.py (DQ bridge)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="arch-col">
+        <div class="arch-col-header" style="background:#3d1a0d;">Consumers</div>
+        <div class="arch-col-body">
+          <ul>
+            <li>MS Teams / Slack Bot</li>
+            <li>waranara.com/agent</li>
+            <li>Council Dashboard</li>
+            <li>Domain Lead Approvals</li>
+            <li>Discovery API (/ask)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 11. APPROVAL GATES -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="approvals">
+    <div class="section-tag">Human Oversight</div>
+    <h2>Human-in-the-Loop Approval Gates</h2>
+    <p>Three gates ensure no metadata is written to the graph, and no product is published, without appropriate human sign-off. The agent cannot override these gates.</p>
+
+    <div class="gate-flow">
+      <div class="gate-item">
+        <div class="gate-num">Gate 1<br>Should We Ask?</div>
+        <div class="gate-body">
+          <strong>Trigger: Gap detected in graph</strong>
+          <p>Before the agent sends any message to a Product Owner, the Domain Lead confirms it's appropriate to initiate contact. Prevents agent spam and ensures conversations are expected.</p>
+        </div>
+        <div class="gate-who">Domain Lead<br><span style="font-size:10px;color:#64748b;">Manual</span></div>
+      </div>
+      <div class="gate-item">
+        <div class="gate-num">Gate 2<br>Valid Response?</div>
+        <div class="gate-body">
+          <strong>Trigger: Product Owner replies in Teams/Slack</strong>
+          <p>Agent validates response format automatically (e.g. checks email format, validates country code, confirms Party exists in graph). Ambiguous responses escalate to manual review.</p>
+        </div>
+        <div class="gate-who">Auto + Manual<br><span style="font-size:10px;color:#64748b;">for ambiguous</span></div>
+      </div>
+      <div class="gate-item">
+        <div class="gate-num">Gate 3<br>Write to Graph?</div>
+        <div class="gate-body">
+          <strong>Trigger: Response validated, ready to write to Neo4j</strong>
+          <p>For ownership and stewardship changes, Domain Lead approves before the graph is updated. For low-risk fields (doc URL, tags), write-back is automatic once validated.</p>
+        </div>
+        <div class="gate-who">Domain Lead<br><span style="font-size:10px;color:#64748b;">Manual for ownership</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- 12. ROADMAP -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="roadmap">
+    <div class="section-tag">Roadmap</div>
+    <h2>Delivery Roadmap</h2>
+
+    <div class="roadmap">
+      <div class="rm-col">
+        <div class="rm-header" style="background:#16a34a;">Phase 1 — Complete ✅</div>
+        <div class="rm-body">
+          <ul>
+            <li>ODPS v4.0 ontology (18 entities, 23 relationships)</li>
+            <li>Neo4j knowledge graph — 664 nodes, 637 relationships</li>
+            <li>LangChain + Claude Sonnet discovery agent</li>
+            <li>Slack /ask command live</li>
+            <li>FastAPI on Railway — waranara.com/agent live</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rm-col">
+        <div class="rm-header" style="background:#e05c2a;">Phase 2 — In Progress 🔄</div>
+        <div class="rm-body">
+          <ul>
+            <li>Sprint 1: ODPS v4.0 ontology migration ✅</li>
+            <li>Sprint 2: Gap detection engine</li>
+            <li>Sprint 3: Curation agent — conversational loop</li>
+            <li>Sprint 4: Databricks DQ integration</li>
+            <li>Sprint 5: Neo4j writeback + approval gates</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rm-col">
+        <div class="rm-header" style="background:#64748b;">Phase 3 — Planned 📋</div>
+        <div class="rm-body">
+          <ul>
+            <li>Sprint 6: ODPS YAML validation pipeline (GitHub Actions)</li>
+            <li>Sprint 7: Governance maturity dashboard</li>
+            <li>Sprint 8: Purview bidirectional sync</li>
+            <li>Sprint 9: Migration to Microsoft Fabric IQ</li>
+            <li>Sprint 10: Azure AI Foundry deployment</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">🌐</div>
+      <div class="callout-body">
+        <strong>Working POC — Live Now</strong>
+        <p>The Data Product Intelligence Agent is deployed and publicly accessible at <strong>waranara.com/agent</strong>. Ask it any governance question about the 12 synthetic data products across 4 domains. The same architecture — same ontology, same agent patterns — scales directly to Microsoft Fabric IQ and Azure AI Foundry.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+</body>
+</html>
