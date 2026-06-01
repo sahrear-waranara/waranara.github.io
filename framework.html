@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From TM Forum to Data Products — Telstra Data Mesh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #0F1C3F;
+  --navy2:   #162454;
+  --coral:   #F05A40;
+  --coral2:  #E8432A;
+  --cream:   #F5EFE6;
+  --cream2:  #EDE5D8;
+  --gold:    #C9A84C;
+  --slate:   #5B6B8A;
+  --slateL:  #8B9BB8;
+  --white:   #FFFFFF;
+  --green:   #1A6B4A;
+  --greenL:  #2D9A6E;
+  --blue:    #1B4F9A;
+  --blueL:   #2E6FCA;
+  --purple:  #5B2D8E;
+  --purpleL: #8B52CA;
+  --orange:  #D4720A;
+  --orangeL: #F0931E;
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  --shadow-sm: 0 2px 8px rgba(15,28,63,0.08);
+  --shadow-md: 0 6px 24px rgba(15,28,63,0.12);
+  --shadow-lg: 0 16px 48px rgba(15,28,63,0.18);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--navy);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAVIGATION ───────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(15,28,63,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--coral);
+  letter-spacing: 0.02em;
+}
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--coral); }
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+  padding-top: 56px;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(240,90,64,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(27,79,154,0.15) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.hero-left {
+  position: relative;
+  z-index: 2;
+  padding: 80px 60px 80px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(240,90,64,0.15);
+  border: 1px solid rgba(240,90,64,0.3);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 32px;
+  width: fit-content;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--coral);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 54px);
+  line-height: 1.15;
+  color: var(--white);
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--coral);
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  max-width: 480px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 32px;
+}
+.hero-stat {
+  border-left: 2px solid var(--coral);
+  padding-left: 16px;
+}
+.hero-stat .num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat .lbl {
+  font-size: 11px;
+  color: var(--slateL);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.hero-right {
+  position: relative;
+  z-index: 2;
+  padding: 80px 80px 80px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Framework stack visual */
+.framework-stack {
+  width: 100%;
+  max-width: 400px;
+}
+.framework-card {
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 4px;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.6s ease forwards;
+  opacity: 0;
+  transform: translateX(30px);
+}
+.framework-card:nth-child(1) { animation-delay: 0.2s; }
+.framework-card:nth-child(2) { animation-delay: 0.4s; }
+.framework-card:nth-child(3) { animation-delay: 0.6s; }
+.framework-card:nth-child(4) { animation-delay: 0.8s; }
+@keyframes slideIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.framework-card.sid {
+  background: linear-gradient(135deg, #1B4F9A, #2E6FCA);
+  border: 1px solid rgba(46,111,202,0.5);
+}
+.framework-card.oda {
+  background: linear-gradient(135deg, #5B2D8E, #8B52CA);
+  border: 1px solid rgba(139,82,202,0.5);
+}
+.framework-card.dp {
+  background: linear-gradient(135deg, #1A6B4A, #2D9A6E);
+  border: 1px solid rgba(45,154,110,0.5);
+}
+.framework-card.gov {
+  background: linear-gradient(135deg, #D4720A, #F0931E);
+  border: 1px solid rgba(240,147,30,0.5);
+}
+
+.fc-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 6px;
+}
+.fc-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.fc-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+.stack-arrow {
+  text-align: center;
+  font-size: 20px;
+  color: rgba(255,255,255,0.2);
+  line-height: 1;
+  padding: 2px 0;
+}
+
+/* ── SECTION BASE ─────────────────────────────────────────────── */
+section {
+  padding: 96px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--coral);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 42px);
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: var(--slate);
+  max-width: 680px;
+  margin-bottom: 56px;
+  line-height: 1.7;
+}
+
+/* ── DIVIDER ──────────────────────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cream2), transparent);
+  margin: 0 80px;
+}
+
+.dark-section {
+  background: var(--navy);
+  max-width: none;
+  padding: 96px 80px;
+}
+.dark-section .section-title { color: var(--white); }
+.dark-section .section-subtitle { color: rgba(255,255,255,0.55); }
+.dark-section .section-eyebrow { color: var(--coral); }
+.dark-inner { max-width: 1400px; margin: 0 auto; }
+
+/* ── WHAT IS SID ──────────────────────────────────────────────── */
+.sid-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.sid-explainer {
+  background: var(--navy);
+  border-radius: 16px;
+  padding: 40px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.sid-explainer::before {
+  content: 'SID';
+  position: absolute;
+  top: -20px; right: -10px;
+  font-family: var(--font-display);
+  font-size: 120px;
+  color: rgba(255,255,255,0.04);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.sid-explainer h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.sid-explainer p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.sid-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sid-domain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 12px 16px;
+  transition: background 0.2s;
+}
+.sid-domain:hover { background: rgba(255,255,255,0.1); }
+.sid-domain-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sid-domain-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  flex: 1;
+}
+.sid-domain-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+
+.sid-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.insight-card {
+  background: var(--white);
+  border: 1px solid var(--cream2);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.insight-card .ic-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+.insight-card h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.insight-card p {
+  font-size: 13px;
+  color: var(--slate);
+  line-height: 1.6;
+}
+
+/* ── SID → DATA PRODUCT MAPPING ───────────────────────────────── */
+.mapping-intro {
+  background: var(--navy);
+  border-radius: 16px;
+  padding: 32px 40px;
+  margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+.mapping-step {
+  text-align: center;
+}
+.ms-num {
+  width: 32px; height: 32px;
+  background: var(--coral);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0 auto 10px;
+}
+.ms-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.ms-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+.mapping-arrow {
+  font-size: 24px;
+  color: var(--coral);
+  opacity: 0.6;
+}
+
+/* Domain mapping cards */
+.domain-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.domain-tab {
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  background: var(--white);
+  color: var(--slate);
+  border-color: var(--cream2);
+}
+.domain-tab:hover { border-color: var(--navy); color: var(--navy); }
+.domain-tab.active {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+.domain-panel { display: none; }
+.domain-panel.active { display: block; }
+
+.domain-mapping-grid {
+  display: grid;
+  grid-template-columns: 340px 60px 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+
+.dmg-col-header {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slateL);
+  padding: 10px 16px;
+  border-bottom: 2px solid var(--cream2);
+  margin-bottom: 8px;
+}
+
+.sid-entity-col { }
+.arrow-col { display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
+.dp-col { }
+
+.sid-entity {
+  background: var(--white);
+  border: 1px solid var(--cream2);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.se-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.se-content {}
+.se-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+.se-attrs {
+  font-size: 11px;
+  color: var(--slateL);
+  font-family: var(--font-mono);
+}
+
+.mapping-arrow-row {
+  font-size: 18px;
+  color: var(--coral);
+  margin: 8px 0;
+  opacity: 0.7;
+}
+
+.dp-card {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 6px;
+  border-left: 4px solid transparent;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--cream2);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.dp-card.exists {
+  border-left-color: var(--greenL);
+  background: #F0FDF8;
+}
+.dp-card.planned {
+  border-left-color: var(--blueL);
+}
+.dp-card.critical {
+  border-left-color: var(--coral);
+}
+
+.dp-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.dp-badge.exists { background: #DCF5EC; color: var(--green); }
+.dp-badge.planned { background: #DCE9F8; color: var(--blue); }
+.dp-badge.critical { background: #FDECEA; color: var(--coral2); }
+
+.dp-content {}
+.dp-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.dp-why {
+  font-size: 12px;
+  color: var(--slate);
+  line-height: 1.5;
+}
+.dp-kim {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--coral2);
+  background: rgba(240,90,64,0.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-top: 5px;
+}
+
+/* ── ODA SECTION ──────────────────────────────────────────────── */
+.oda-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.oda-component {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.oda-component:hover { background: rgba(255,255,255,0.09); }
+
+.oda-component::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.oda-component.network::before { background: var(--blueL); }
+.oda-component.commercial::before { background: var(--orangeL); }
+.oda-component.customer::before { background: var(--greenL); }
+.oda-component.intelligence::before { background: var(--purpleL); }
+.oda-component.common::before { background: var(--slateL); }
+
+.oc-category {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.oda-component.network .oc-category { color: var(--blueL); }
+.oda-component.commercial .oc-category { color: var(--orangeL); }
+.oda-component.customer .oc-category { color: var(--greenL); }
+.oda-component.intelligence .oc-category { color: var(--purpleL); }
+.oda-component.common .oc-category { color: var(--slateL); }
+
+.oc-name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--white);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.oc-needs {
+  margin-bottom: 14px;
+}
+.oc-needs-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.oc-need-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.oc-need-item:last-child { border-bottom: none; }
+.oc-need-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.oc-kim-link {
+  background: rgba(240,90,64,0.15);
+  border: 1px solid rgba(240,90,64,0.25);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: rgba(240,90,64,0.9);
+  line-height: 1.4;
+}
+.oc-kim-link strong { display: block; margin-bottom: 2px; color: var(--coral); }
+
+/* ── FULL DATA PRODUCT LIST ───────────────────────────────────── */
+.full-list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.domain-column {
+  background: var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--cream2);
+}
+
+.dc-header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dc-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.dc-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--white);
+  line-height: 1.2;
+}
+.dc-count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+}
+
+.dc-products {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dcp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--cream);
+  border: 1px solid var(--cream2);
+  transition: border-color 0.15s;
+}
+.dcp-item:hover { border-color: var(--slateL); }
+.dcp-item.exists { background: #F0FDF8; border-color: #B8E8D4; }
+
+.dcp-status {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.dcp-status.exists { background: var(--greenL); }
+.dcp-status.critical { background: var(--coral); }
+.dcp-status.planned { background: var(--blueL); }
+.dcp-status.regulatory { background: var(--gold); }
+
+.dcp-info {}
+.dcp-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.dcp-source {
+  font-size: 10px;
+  color: var(--slateL);
+  font-family: var(--font-mono);
+}
+
+/* ── LEGEND ───────────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  padding: 16px 24px;
+  background: var(--white);
+  border-radius: 10px;
+  border: 1px solid var(--cream2);
+  box-shadow: var(--shadow-sm);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--slate);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── DECISION FRAMEWORK ───────────────────────────────────────── */
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.decision-card {
+  border-radius: 14px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.decision-card.q1 {
+  background: linear-gradient(135deg, #F05A40, #E8432A);
+  color: var(--white);
+}
+.decision-card.q2 {
+  background: linear-gradient(135deg, #C9A84C, #B8912A);
+  color: var(--white);
+}
+.decision-card.q3 {
+  background: linear-gradient(135deg, #1A6B4A, #2D9A6E);
+  color: var(--white);
+}
+
+.dc-q-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+.dc-q-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+.dc-q-examples {
+  font-size: 12px;
+  opacity: 0.8;
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.dc-q-result {
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── TELSTRA CONTEXT STRIP ────────────────────────────────────── */
+.context-strip {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+  border-radius: 16px;
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin: 48px 0;
+  position: relative;
+  overflow: hidden;
+}
+.context-strip::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(240,90,64,0.08);
+}
+
+.cs-left h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--white);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.cs-left p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+.cs-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cs-quote {
+  background: rgba(240,90,64,0.12);
+  border-left: 3px solid var(--coral);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+}
+.cs-quote p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.cs-quote span {
+  font-size: 11px;
+  color: var(--coral);
+  font-weight: 600;
+}
+
+/* ── APPROACH TIMELINE ────────────────────────────────────────── */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--coral), var(--navy));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 36px;
+  padding-left: 32px;
+}
+.timeline-dot {
+  position: absolute;
+  left: -33px;
+  top: 4px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  background: var(--coral);
+  box-shadow: 0 0 0 3px rgba(240,90,64,0.25);
+}
+.timeline-dot.done { background: var(--greenL); box-shadow: 0 0 0 3px rgba(45,154,110,0.25); }
+.timeline-dot.next { background: var(--blueL); box-shadow: 0 0 0 3px rgba(46,111,202,0.25); }
+
+.ti-step {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slateL);
+  margin-bottom: 4px;
+}
+.ti-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.ti-desc {
+  font-size: 13px;
+  color: var(--slate);
+  line-height: 1.6;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+footer {
+  background: var(--navy);
+  padding: 40px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+footer p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+.footer-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--coral); }
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .sid-grid { grid-template-columns: 1fr; }
+  .oda-grid { grid-template-columns: 1fr 1fr; }
+  .full-list-grid { grid-template-columns: 1fr 1fr; }
+  .decision-grid { grid-template-columns: 1fr; }
+  .domain-mapping-grid { grid-template-columns: 1fr; }
+  .arrow-col { display: none; }
+  nav { padding: 0 24px; }
+  section { padding: 64px 24px; }
+  .dark-section { padding: 64px 24px; }
+  footer { padding: 32px 24px; flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">TM Forum → Data Products</div>
+  <ul class="nav-links">
+    <li><a href="#what-is-sid">SID</a></li>
+    <li><a href="#sid-mapping">SID Mapping</a></li>
+    <li><a href="#oda">ODA</a></li>
+    <li><a href="#full-list">Full List</a></li>
+    <li><a href="#approach">Approach</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">TM Forum Framework</div>
+    <h1>How we derive <em>data products</em> from industry standards</h1>
+    <p class="hero-desc">
+      Rather than guessing which data products Telstra needs, TM Forum's SID and ODA frameworks 
+      give us an industry-validated, telco-specific blueprint. This document explains the thinking 
+      behind the data product list for each domain.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-stat">
+        <div class="num">SID</div>
+        <div class="lbl">Business Entity Model</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">ODA</div>
+        <div class="lbl">Architecture Blueprint</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">35+</div>
+        <div class="lbl">Derived Data Products</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="framework-stack">
+      <div class="framework-card sid">
+        <div class="fc-label">Layer 1 — TM Forum</div>
+        <div class="fc-title">Shared Information & Data Model (SID)</div>
+        <div class="fc-desc">Defines every business entity a telco operates with — Customer, Product, Service, Resource, Party</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="framework-card oda">
+        <div class="fc-label">Layer 2 — TM Forum</div>
+        <div class="fc-title">Open Digital Architecture (ODA)</div>
+        <div class="fc-desc">Defines autonomous components and the data they need to operate — maps to Kim's agentic vision</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="framework-card dp">
+        <div class="fc-label">Layer 3 — Derived</div>
+        <div class="fc-title">Data Products per Domain</div>
+        <div class="fc-desc">Each SID entity cluster + ODA component data requirement = one or more governed data products</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="framework-card gov">
+        <div class="fc-label">Layer 4 — Your Work</div>
+        <div class="fc-title">Data Product Governance Agent</div>
+        <div class="fc-desc">Governs, curates, and makes each data product trusted and accessible for agentic AI systems</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT IS SID -->
+<section id="what-is-sid">
+  <div class="section-eyebrow">Foundation</div>
+  <h2 class="section-title">What is TM Forum SID — and why does it matter?</h2>
+  <p class="section-subtitle">
+    SID is the telco industry's agreed model for what business concepts exist and how they relate. 
+    Every major telco — Telstra, Verizon, Deutsche Telekom, Singtel — uses SID as the reference. 
+    It is not a database schema. It is a map of business meaning.
+  </p>
+
+  <div class="sid-grid">
+    <div class="sid-explainer">
+      <h3>SID organises telco concepts into Subject Business Areas</h3>
+      <p>
+        Each Subject Business Area (SBA) groups related business entities together. 
+        The logic is simple: if you can draw a boundary around a set of concepts that 
+        a single business function owns, that is an SBA. Each SBA becomes a data domain. 
+        Each entity within it becomes a candidate data product.
+      </p>
+
+      <div class="sid-domains">
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#2E6FCA;"></div>
+          <div class="sid-domain-name">Customer SBA</div>
+          <div class="sid-domain-desc">Account, Bill, Order, Problem, Interaction</div>
+        </div>
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#2D9A6E;"></div>
+          <div class="sid-domain-name">Product SBA</div>
+          <div class="sid-domain-desc">Product Offering, Specification, Inventory</div>
+        </div>
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#8B52CA;"></div>
+          <div class="sid-domain-name">Service SBA</div>
+          <div class="sid-domain-desc">Service, SLA, Problem, Configuration</div>
+        </div>
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#F0931E;"></div>
+          <div class="sid-domain-name">Resource SBA</div>
+          <div class="sid-domain-desc">Physical Resource, Network, Capacity</div>
+        </div>
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#C9A84C;"></div>
+          <div class="sid-domain-name">Engaged Party SBA</div>
+          <div class="sid-domain-desc">Party, Role, Interaction, Agreement</div>
+        </div>
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#E8432A;"></div>
+          <div class="sid-domain-name">Enterprise SBA</div>
+          <div class="sid-domain-desc">Finance, Budget, HR, Performance</div>
+        </div>
+        <div class="sid-domain">
+          <div class="sid-domain-dot" style="background:#5B6B8A;"></div>
+          <div class="sid-domain-name">Common Business Entities</div>
+          <div class="sid-domain-desc">Location, Calendar, Document, Reference</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sid-right">
+      <div class="insight-card">
+        <div class="ic-icon" style="background:#EEF5FF;">📐</div>
+        <h4>The derivation logic</h4>
+        <p>Each SID entity that has operational data, is owned by a specific domain team, 
+        and is consumed by other domains or AI agents becomes a data product. Not every 
+        entity needs its own product — related entities are grouped where they are always 
+        consumed together.</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="ic-icon" style="background:#FFF5EC;">🔗</div>
+        <h4>Why not just look at Purview?</h4>
+        <p>Purview shows you what data assets exist today — tables, files, views. SID shows 
+        you what data products <em>should</em> exist based on how a telco operates. The gap 
+        between the two is your data product roadmap. SID gives you the target state; 
+        Purview gives you the current state.</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="ic-icon" style="background:#F0FDF8;">✅</div>
+        <h4>Telstra already uses TM Forum</h4>
+        <p>Telstra is a TM Forum member and has historically used SID as a reference model 
+        for its BSS/OSS architecture. Your governance ontology already aligns to TM Forum 
+        SID for the Party entity. This is not a new standard — it is the existing standard 
+        applied to the data product layer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SID TO DATA PRODUCT MAPPING -->
+<section id="sid-mapping">
+  <div class="section-eyebrow">Derivation</div>
+  <h2 class="section-title">How SID entities become data products</h2>
+  <p class="section-subtitle">
+    For each domain, we take the SID entities that belong to it, identify the key attributes 
+    those entities carry, and derive the data products needed to govern and expose that data. 
+    Select a domain to see the derivation.
+  </p>
+
+  <div class="mapping-intro">
+    <div class="mapping-step">
+      <div class="ms-num">1</div>
+      <div class="ms-title">SID Entity</div>
+      <div class="ms-desc">What business concept exists in this domain?</div>
+    </div>
+    <div class="mapping-arrow">→</div>
+    <div class="mapping-step">
+      <div class="ms-num">2</div>
+      <div class="ms-title">Key Attributes</div>
+      <div class="ms-desc">What data does this entity carry that other systems need?</div>
+    </div>
+    <div class="mapping-arrow">→</div>
+    <div class="mapping-step">
+      <div class="ms-num">3</div>
+      <div class="ms-title">Consumers</div>
+      <div class="ms-desc">Who or what consumes this data — humans, agents, systems?</div>
+    </div>
+    <div class="mapping-arrow">→</div>
+    <div class="mapping-step">
+      <div class="ms-num">4</div>
+      <div class="ms-title">Data Product</div>
+      <div class="ms-desc">The governed, trusted, accessible product that serves those consumers</div>
+    </div>
+  </div>
+
+  <!-- DOMAIN TABS -->
+  <div class="domain-tabs">
+    <div class="domain-tab active" onclick="showDomain('customer')">Customer</div>
+    <div class="domain-tab" onclick="showDomain('product')">Product & Service</div>
+    <div class="domain-tab" onclick="showDomain('network')">Network & Resource</div>
+    <div class="domain-tab" onclick="showDomain('finance')">Finance & Billing</div>
+    <div class="domain-tab" onclick="showDomain('shared')">Shared & Reference</div>
+  </div>
+
+  <!-- CUSTOMER DOMAIN -->
+  <div class="domain-panel active" id="panel-customer">
+    <div class="domain-mapping-grid">
+      <div>
+        <div class="dmg-col-header">SID Entity + Key Attributes</div>
+
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2E6FCA;"></div>
+          <div class="se-content">
+            <div class="se-name">Customer Account</div>
+            <div class="se-attrs">account_id · status · tier · CIDN · CAC · created_date</div>
+          </div>
+        </div>
+
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2E6FCA;"></div>
+          <div class="se-content">
+            <div class="se-name">Customer Interaction</div>
+            <div class="se-attrs">channel · sentiment · resolution · NPS · timestamp</div>
+          </div>
+        </div>
+
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2E6FCA;"></div>
+          <div class="se-content">
+            <div class="se-name">Customer Bill</div>
+            <div class="se-attrs">bill_period · amount · status · payment_date · dispute_flag</div>
+          </div>
+        </div>
+
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2E6FCA;"></div>
+          <div class="se-content">
+            <div class="se-name">Customer Order</div>
+            <div class="se-attrs">order_id · product · status · channel · completion_date</div>
+          </div>
+        </div>
+
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2E6FCA;"></div>
+          <div class="se-content">
+            <div class="se-name">Customer Problem (Case)</div>
+            <div class="se-attrs">case_id · type · status · severity · resolution_time</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div style="font-size:28px; color:var(--coral); margin-top:60px;">→</div>
+      </div>
+
+      <div>
+        <div class="dmg-col-header">Derived Data Products</div>
+
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Customer-360</div>
+            <div class="dp-why">Golden record of customer identity, account status, tier, and key identifiers. Central node for all customer-touching agents.</div>
+            <div class="dp-kim">Kim: Customer engagement layer + autonomous decisions</div>
+          </div>
+        </div>
+
+        <div class="dp-card critical">
+          <span class="dp-badge critical">Critical Path</span>
+          <div class="dp-content">
+            <div class="dp-name">Customer Experience Data Product</div>
+            <div class="dp-why">Aggregated NPS, complaint history, interaction channel mix, sentiment trends. Required for proactive care and churn agents.</div>
+            <div class="dp-kim">Kim: Agentic systems turning insights into action</div>
+          </div>
+        </div>
+
+        <div class="dp-card critical">
+          <span class="dp-badge critical">Critical Path</span>
+          <div class="dp-content">
+            <div class="dp-name">Customer Value Tier Data Product</div>
+            <div class="dp-why">Lifetime value, revenue contribution, strategic segment. Needed for token-based pricing model Kim described — high-value customers get priority network resources.</div>
+            <div class="dp-kim">Kim: Token-based AI-scalable business model</div>
+          </div>
+        </div>
+
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Churn Signal Data Product</div>
+            <div class="dp-why">Early warning indicators, propensity scores, intervention history. Feeds autonomous proactive care agents.</div>
+          </div>
+        </div>
+
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Consent & Privacy Data Product</div>
+            <div class="dp-why">Customer consent records, data sharing permissions. Regulatory non-negotiable — agents must check this before using customer data.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT & SERVICE DOMAIN -->
+  <div class="domain-panel" id="panel-product">
+    <div class="domain-mapping-grid">
+      <div>
+        <div class="dmg-col-header">SID Entity + Key Attributes</div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2D9A6E;"></div>
+          <div class="se-content">
+            <div class="se-name">Product Offering</div>
+            <div class="se-attrs">product_id · name · type · price · market_segment · status</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2D9A6E;"></div>
+          <div class="se-content">
+            <div class="se-name">Service (Telecoms)</div>
+            <div class="se-attrs">service_id · type · status · customer_id · network_element</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2D9A6E;"></div>
+          <div class="se-content">
+            <div class="se-name">Service Level Agreement</div>
+            <div class="se-attrs">sla_id · metric · threshold · compliance_rate · breach_count</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#2D9A6E;"></div>
+          <div class="se-content">
+            <div class="se-name">Service Problem</div>
+            <div class="se-attrs">incident_id · severity · affected_services · MTTR · root_cause</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-col">
+        <div style="font-size:28px; color:var(--coral); margin-top:60px;">→</div>
+      </div>
+      <div>
+        <div class="dmg-col-header">Derived Data Products</div>
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Product-Catalogue</div>
+            <div class="dp-why">All active product offerings, pricing, eligibility rules. Agents use this to check what a customer can order or upgrade to.</div>
+          </div>
+        </div>
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Service-Fixed / Service-NBN / Service-Mobile</div>
+            <div class="dp-why">Active service instances by type. Autonomous network agents need this to know which customer has which service on which network element.</div>
+            <div class="dp-kim">Kim: Autonomous network sensing layer</div>
+          </div>
+        </div>
+        <div class="dp-card critical">
+          <span class="dp-badge critical">Critical Path</span>
+          <div class="dp-content">
+            <div class="dp-name">SLA Performance Data Product</div>
+            <div class="dp-why">Real-time SLA compliance by service and customer. Autonomous assurance agents monitor this and trigger remediation when thresholds breach.</div>
+            <div class="dp-kim">Kim: Autonomous network — sense, decide, act</div>
+          </div>
+        </div>
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Fault & Incident Data Product</div>
+            <div class="dp-why">Service problems, MTTR, root causes, affected customer count. Feeds autonomous fault triage agents.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NETWORK & RESOURCE DOMAIN -->
+  <div class="domain-panel" id="panel-network">
+    <div class="domain-mapping-grid">
+      <div>
+        <div class="dmg-col-header">SID Entity + Key Attributes</div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#8B52CA;"></div>
+          <div class="se-content">
+            <div class="se-name">Physical Resource</div>
+            <div class="se-attrs">asset_id · type · location · age · maintenance_status</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#8B52CA;"></div>
+          <div class="se-content">
+            <div class="se-name">Network Function</div>
+            <div class="se-attrs">function_id · type · status · latency · jitter · uplink</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#8B52CA;"></div>
+          <div class="se-content">
+            <div class="se-name">Capacity</div>
+            <div class="se-attrs">node_id · current_util · max_capacity · headroom · forecast</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#8B52CA;"></div>
+          <div class="se-content">
+            <div class="se-name">Network Topology</div>
+            <div class="se-attrs">node · edge · path · redundancy · coverage_area</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-col">
+        <div style="font-size:28px; color:var(--coral); margin-top:60px;">→</div>
+      </div>
+      <div>
+        <div class="dmg-col-header">Derived Data Products</div>
+        <div class="dp-card critical">
+          <span class="dp-badge critical">Critical Path</span>
+          <div class="dp-content">
+            <div class="dp-name">Network Performance Data Product</div>
+            <div class="dp-why">Real-time latency, jitter, uplink, energy consumption by node. This is the sensing layer for Kim's autonomous network — without it the network agent is blind.</div>
+            <div class="dp-kim">Kim: Autonomous network — AI optimises performance at scale</div>
+          </div>
+        </div>
+        <div class="dp-card critical">
+          <span class="dp-badge critical">Critical Path</span>
+          <div class="dp-content">
+            <div class="dp-name">Network Topology Data Product</div>
+            <div class="dp-why">Graph of nodes, edges, paths, coverage areas. Agents need this to understand routing, redundancy, and impact of changes before making them.</div>
+            <div class="dp-kim">Kim: Intent-based slicing demands ontology and context</div>
+          </div>
+        </div>
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Capacity & Utilisation Data Product</div>
+            <div class="dp-why">Current vs maximum capacity by node and region. Autonomous agents use this for dynamic resource allocation decisions.</div>
+          </div>
+        </div>
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Network Asset & Inventory Data Product</div>
+            <div class="dp-why">Physical assets, age, maintenance schedules. Required for predictive maintenance agents and capital planning.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINANCE & BILLING -->
+  <div class="domain-panel" id="panel-finance">
+    <div class="domain-mapping-grid">
+      <div>
+        <div class="dmg-col-header">SID Entity + Key Attributes</div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#F0931E;"></div>
+          <div class="se-content">
+            <div class="se-name">Financial Account</div>
+            <div class="se-attrs">account_id · balance · credit_limit · payment_history · risk_score</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#F0931E;"></div>
+          <div class="se-content">
+            <div class="se-name">Customer Bill</div>
+            <div class="se-attrs">bill_id · period · amount · charges · disputes · payment_method</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#F0931E;"></div>
+          <div class="se-content">
+            <div class="se-name">Revenue</div>
+            <div class="se-attrs">revenue_type · amount · period · product · channel · region</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#F0931E;"></div>
+          <div class="se-content">
+            <div class="se-name">Usage Event</div>
+            <div class="se-attrs">event_id · type · volume · timestamp · rating · cost</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-col">
+        <div style="font-size:28px; color:var(--coral); margin-top:60px;">→</div>
+      </div>
+      <div>
+        <div class="dmg-col-header">Derived Data Products</div>
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Billing-Summary</div>
+            <div class="dp-why">Bill history, payment behaviour, dispute frequency. Used by churn agents, credit risk agents, and revenue assurance.</div>
+          </div>
+        </div>
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Order-History</div>
+            <div class="dp-why">What a customer has ordered over time. Feeds product recommendation agents and contract renewal agents.</div>
+          </div>
+        </div>
+        <div class="dp-card critical">
+          <span class="dp-badge critical">Critical Path</span>
+          <div class="dp-content">
+            <div class="dp-name">Customer Usage Data Product</div>
+            <div class="dp-why">Real-time consumption by service, by customer. This is the foundation of Kim's token-based pricing model — you cannot monetise AI-driven network services without granular usage data.</div>
+            <div class="dp-kim">Kim: Token-based, AI-scalable business model</div>
+          </div>
+        </div>
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Fraud Detection Data Product</div>
+            <div class="dp-why">Anomalous usage patterns, SIM swap signals, subscription fraud. Autonomous fraud agents monitor in real time.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED & REFERENCE -->
+  <div class="domain-panel" id="panel-shared">
+    <div class="domain-mapping-grid">
+      <div>
+        <div class="dmg-col-header">SID Entity + Key Attributes</div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#5B6B8A;"></div>
+          <div class="se-content">
+            <div class="se-name">Location / Address</div>
+            <div class="se-attrs">address_id · street · suburb · state · geocode · coverage_flag</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#5B6B8A;"></div>
+          <div class="se-content">
+            <div class="se-name">Party (Person/Organisation)</div>
+            <div class="se-attrs">party_id · name · email · role · org_unit · country</div>
+          </div>
+        </div>
+        <div class="sid-entity">
+          <div class="se-dot" style="background:#5B6B8A;"></div>
+          <div class="se-content">
+            <div class="se-name">Reference Data</div>
+            <div class="se-attrs">code_type · code_value · description · effective_date · status</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-col">
+        <div style="font-size:28px; color:var(--coral); margin-top:60px;">→</div>
+      </div>
+      <div>
+        <div class="dmg-col-header">Derived Data Products</div>
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Address-Master</div>
+            <div class="dp-why">Authoritative address and premises reference. Shared by customer, network, and field workforce domains. Avoids address duplication across systems.</div>
+          </div>
+        </div>
+        <div class="dp-card exists">
+          <span class="dp-badge exists">✓ Exists (Synthetic)</span>
+          <div class="dp-content">
+            <div class="dp-name">Premises-Reference</div>
+            <div class="dp-why">Physical premises with network coverage flags. Field agents use this to confirm serviceability before committing to an order.</div>
+          </div>
+        </div>
+        <div class="dp-card planned">
+          <span class="dp-badge planned">Planned</span>
+          <div class="dp-content">
+            <div class="dp-name">Regulatory Reporting Data Product</div>
+            <div class="dp-why">ACMA obligations, USO metrics, privacy compliance statistics. Non-negotiable — regulatory agents must be able to produce reports on demand.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ODA SECTION -->
+<div class="dark-section" id="oda">
+  <div class="dark-inner">
+    <div class="section-eyebrow">ODA Layer</div>
+    <h2 class="section-title">How ODA components tell us what data products are needed</h2>
+    <p class="section-subtitle">
+      ODA defines autonomous, API-driven capability components — each one maps directly to Kim's four strategic planks. 
+      Every ODA component has defined data inputs. Those inputs are the data products that must exist and be governed 
+      before the component can operate reliably.
+    </p>
+
+    <div class="context-strip">
+      <div class="cs-left">
+        <h3>Kim's vision maps precisely to ODA components</h3>
+        <p>Kim described four planks: autonomous network, 6G integration, token-based business model, and customer engagement. 
+        Each plank corresponds to a set of ODA components. Each component has data dependencies. 
+        Those dependencies are your data product roadmap.</p>
+      </div>
+      <div class="cs-right">
+        <div class="cs-quote">
+          <p>"AI-first in how we design, operate and make decisions… including tokens economics, semantic models, ontology and context"</p>
+          <span>Kim Krogh Andersen — GN&T + P&T Group Executive</span>
+        </div>
+        <div class="cs-quote">
+          <p>"Accelerate the use of agentic systems to turn insights into action quickly and at scale"</p>
+          <span>Kim Krogh Andersen — GN&T + P&T Group Executive</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="oda-grid">
+
+      <div class="oda-component network">
+        <div class="oc-category">Kim Plank 1 — Autonomous Network</div>
+        <div class="oc-name">Autonomous Network Assurance</div>
+        <div class="oc-needs">
+          <div class="oc-needs-label">Requires these data products</div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Network Performance Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Network Topology Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            SLA Performance Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Fault & Incident Data Product
+          </div>
+        </div>
+        <div class="oc-kim-link">
+          <strong>Kim's words</strong>
+          "A network that can sense, decide and act in real time using AI"
+        </div>
+      </div>
+
+      <div class="oda-component network">
+        <div class="oc-category">Kim Plank 1 — Autonomous Network</div>
+        <div class="oc-name">Network Slice Management</div>
+        <div class="oc-needs">
+          <div class="oc-needs-label">Requires these data products</div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Capacity & Utilisation Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Customer Value Tier Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2E6FCA;"></div>
+            Service Instance Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            SLA Performance Data Product
+          </div>
+        </div>
+        <div class="oc-kim-link">
+          <strong>Kim's words</strong>
+          "Intent based slicing demands ontology, context and a semantic layer"
+        </div>
+      </div>
+
+      <div class="oda-component commercial">
+        <div class="oc-category">Kim Plank 3 — Business Model</div>
+        <div class="oc-name">Digital Monetisation</div>
+        <div class="oc-needs">
+          <div class="oc-needs-label">Requires these data products</div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Customer Usage Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Customer Value Tier Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Product-Catalogue
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Billing-Summary
+          </div>
+        </div>
+        <div class="oc-kim-link">
+          <strong>Kim's words</strong>
+          "Token-based, AI-scalable model that grows with demand, not against it"
+        </div>
+      </div>
+
+      <div class="oda-component customer">
+        <div class="oc-category">Kim Plank 4 — Customer Engagement</div>
+        <div class="oc-name">Proactive Care Agent</div>
+        <div class="oc-needs">
+          <div class="oc-needs-label">Requires these data products</div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            Churn Signal Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Customer-360
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Customer Experience Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Network Performance Data Product
+          </div>
+        </div>
+        <div class="oc-kim-link">
+          <strong>Kim's words</strong>
+          "Enable the entire customer engagement layer"
+        </div>
+      </div>
+
+      <div class="oda-component intelligence">
+        <div class="oc-category">Kim Plank 1+4 — AI Core</div>
+        <div class="oc-name">AI & Analytics Engine</div>
+        <div class="oc-needs">
+          <div class="oc-needs-label">Requires these data products</div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#E8432A;"></div>
+            All governed, trusted data products
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#8B52CA;"></div>
+            Governance metadata (your agent)
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#8B52CA;"></div>
+            Consent & Privacy Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Customer Value Tier
+          </div>
+        </div>
+        <div class="oc-kim-link">
+          <strong>Kim's words</strong>
+          "AI-first in how we design, operate and make decisions"
+        </div>
+      </div>
+
+      <div class="oda-component common">
+        <div class="oc-category">Regulatory — Non-negotiable</div>
+        <div class="oc-name">Compliance & Assurance</div>
+        <div class="oc-needs">
+          <div class="oc-needs-label">Requires these data products</div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#C9A84C;"></div>
+            Consent & Privacy Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#C9A84C;"></div>
+            Regulatory Reporting Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#C9A84C;"></div>
+            Fraud Detection Data Product
+          </div>
+          <div class="oc-need-item">
+            <div class="oc-need-dot" style="background:#2D9A6E;"></div>
+            Address-Master
+          </div>
+        </div>
+        <div class="oc-kim-link">
+          <strong>Why mandatory</strong>
+          AI agents cannot operate on ungoverned data — regulatory and legal exposure
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FULL PRODUCT LIST -->
+<section id="full-list">
+  <div class="section-eyebrow">Complete View</div>
+  <h2 class="section-title">Full data product list — all domains</h2>
+  <p class="section-subtitle">
+    Every data product derived from SID entity clusters and ODA component requirements, 
+    organised by domain. Colour indicates priority and current status.
+  </p>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--greenL);"></div>
+      Already exists in synthetic POC
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--coral);"></div>
+      Critical path — Kim's planks fail without it
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--blueL);"></div>
+      Planned — important but not immediate
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--gold);"></div>
+      Regulatory — non-negotiable regardless of strategy
+    </div>
+  </div>
+
+  <div class="full-list-grid">
+
+    <!-- Customer -->
+    <div class="domain-column">
+      <div class="dc-header" style="background:linear-gradient(135deg,#1B4F9A,#2E6FCA);">
+        <div class="dc-icon" style="background:rgba(255,255,255,0.15);">👤</div>
+        <div class="dc-title">Customer Domain</div>
+        <div class="dc-count">7 products</div>
+      </div>
+      <div class="dc-products">
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Customer-360</div>
+            <div class="dcp-source">SID: Customer Account</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Customer Experience</div>
+            <div class="dcp-source">SID: Customer Interaction</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Customer Value Tier</div>
+            <div class="dcp-source">SID: Customer Account + ODA: Monetisation</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Churn Signal</div>
+            <div class="dcp-source">SID: Customer Problem + ODA: Proactive Care</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status regulatory"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Consent & Privacy</div>
+            <div class="dcp-source">SID: Customer Agreement + Regulatory</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Customer Segments</div>
+            <div class="dcp-source">SID: Market Segment (exists synthetic)</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Campaign Response</div>
+            <div class="dcp-source">SID: Customer Interaction (exists synthetic)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product & Service -->
+    <div class="domain-column">
+      <div class="dc-header" style="background:linear-gradient(135deg,#1A6B4A,#2D9A6E);">
+        <div class="dc-icon" style="background:rgba(255,255,255,0.15);">📦</div>
+        <div class="dc-title">Product & Service Domain</div>
+        <div class="dc-count">7 products</div>
+      </div>
+      <div class="dc-products">
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Product-Catalogue</div>
+            <div class="dcp-source">SID: Product Offering</div>
+          </div>
+        </div>
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Service-Fixed</div>
+            <div class="dcp-source">SID: Service (Fixed)</div>
+          </div>
+        </div>
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Service-Mobile</div>
+            <div class="dcp-source">SID: Service (Mobile)</div>
+          </div>
+        </div>
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Service-NBN</div>
+            <div class="dcp-source">SID: Service (Broadband)</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">SLA Performance</div>
+            <div class="dcp-source">SID: SLA + ODA: Autonomous Assurance</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Fault & Incident</div>
+            <div class="dcp-source">SID: Service Problem</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Contract & Agreement</div>
+            <div class="dcp-source">SID: Service Agreement</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Network -->
+    <div class="domain-column">
+      <div class="dc-header" style="background:linear-gradient(135deg,#5B2D8E,#8B52CA);">
+        <div class="dc-icon" style="background:rgba(255,255,255,0.15);">🌐</div>
+        <div class="dc-title">Network & Resource Domain</div>
+        <div class="dc-count">6 products</div>
+      </div>
+      <div class="dc-products">
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Network Performance</div>
+            <div class="dcp-source">SID: Network Function + ODA: Autonomous Assurance</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Network Topology</div>
+            <div class="dcp-source">SID: Network + ODA: Slice Management</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Capacity & Utilisation</div>
+            <div class="dcp-source">SID: Capacity + ODA: Slice Management</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Network Asset & Inventory</div>
+            <div class="dcp-source">SID: Physical Resource</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Planned Maintenance</div>
+            <div class="dcp-source">SID: Resource Trouble</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Spectrum Management</div>
+            <div class="dcp-source">SID: Logical Resource (6G roadmap)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finance -->
+    <div class="domain-column">
+      <div class="dc-header" style="background:linear-gradient(135deg,#D4720A,#F0931E);">
+        <div class="dc-icon" style="background:rgba(255,255,255,0.15);">💰</div>
+        <div class="dc-title">Finance & Billing Domain</div>
+        <div class="dc-count">5 products</div>
+      </div>
+      <div class="dc-products">
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Billing-Summary</div>
+            <div class="dcp-source">SID: Customer Bill</div>
+          </div>
+        </div>
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Order-History</div>
+            <div class="dcp-source">SID: Customer Order</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Customer Usage</div>
+            <div class="dcp-source">SID: Usage + ODA: Digital Monetisation</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Revenue & Rating</div>
+            <div class="dcp-source">SID: Financial Account</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status regulatory"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Fraud Detection</div>
+            <div class="dcp-source">SID: Financial Account + Regulatory</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="domain-column">
+      <div class="dc-header" style="background:linear-gradient(135deg,#2D4A6B,#3D6B9A);">
+        <div class="dc-icon" style="background:rgba(255,255,255,0.15);">📍</div>
+        <div class="dc-title">Address & Location Domain</div>
+        <div class="dc-count">3 products</div>
+      </div>
+      <div class="dc-products">
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Address-Master</div>
+            <div class="dcp-source">SID: Location</div>
+          </div>
+        </div>
+        <div class="dcp-item exists">
+          <div class="dcp-status exists"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Premises-Reference</div>
+            <div class="dcp-source">SID: GeographicSite</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status critical"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Coverage & Availability</div>
+            <div class="dcp-source">SID: Location + ODA: Network components</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shared -->
+    <div class="domain-column">
+      <div class="dc-header" style="background:linear-gradient(135deg,#3A3A4A,#5B6B8A);">
+        <div class="dc-icon" style="background:rgba(255,255,255,0.15);">🔗</div>
+        <div class="dc-title">Shared & Reference Domain</div>
+        <div class="dc-count">4 products</div>
+      </div>
+      <div class="dc-products">
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Party & Identity</div>
+            <div class="dcp-source">SID: Engaged Party</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status regulatory"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Consent & Privacy</div>
+            <div class="dcp-source">SID: Party Privacy + Regulatory (Privacy Act)</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status regulatory"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Regulatory Reporting</div>
+            <div class="dcp-source">SID: Enterprise + ACMA obligations</div>
+          </div>
+        </div>
+        <div class="dcp-item">
+          <div class="dcp-status planned"></div>
+          <div class="dcp-info">
+            <div class="dcp-name">Reference Data</div>
+            <div class="dcp-source">SID: Common Business Entities</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- DECISION FRAMEWORK -->
+<section>
+  <div class="section-eyebrow">Prioritisation</div>
+  <h2 class="section-title">How to decide which data products to build first</h2>
+  <p class="section-subtitle">
+    Not all 35+ data products are equal priority. Three questions determine the build sequence.
+  </p>
+
+  <div class="decision-grid">
+    <div class="decision-card q1">
+      <div class="dc-q-num">Question 1 — Highest Priority</div>
+      <div class="dc-q-text">Does Kim's autonomous network fail without it?</div>
+      <div class="dc-q-examples">
+        Network Performance, Network Topology, SLA Performance, Customer Usage, Customer Value Tier, Service Instance
+      </div>
+      <div class="dc-q-result">→ Build now. Critical path.</div>
+    </div>
+
+    <div class="decision-card q2">
+      <div class="dc-q-num">Question 2 — Non-negotiable</div>
+      <div class="dc-q-text">Does a regulatory obligation require it?</div>
+      <div class="dc-q-examples">
+        Consent & Privacy, Regulatory Reporting, Fraud Detection — required by Privacy Act, ACMA, and financial regulation regardless of strategy
+      </div>
+      <div class="dc-q-result">→ Build in parallel. No choice.</div>
+    </div>
+
+    <div class="decision-card q3">
+      <div class="dc-q-num">Question 3 — Commercial</div>
+      <div class="dc-q-text">Does it directly protect or grow revenue?</div>
+      <div class="dc-q-examples">
+        Churn Signal, Customer Experience, Contract & Agreement, Fraud Detection — revenue protection and growth levers
+      </div>
+      <div class="dc-q-result">→ Build next. High ROI.</div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH TIMELINE -->
+<div class="dark-section" id="approach">
+  <div class="dark-inner">
+    <div class="section-eyebrow">Recommended Approach</div>
+    <h2 class="section-title">How to use this framework with domain teams</h2>
+    <p class="section-subtitle">
+      Rather than starting from a blank page, take this SID + ODA derived list into domain team conversations 
+      as a validated hypothesis. The conversation becomes a validation exercise, not an invention exercise.
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start;">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot done"></div>
+          <div class="ti-step">Done — POC</div>
+          <div class="ti-title">12 synthetic data products in governance graph</div>
+          <div class="ti-desc">Customer-360, Service-NBN, Billing-Summary and 9 others are already modelled, governed, and queryable at waranara.com/agent. SID-aligned from the start.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="ti-step">Step 1 — Now</div>
+          <div class="ti-title">Domain roadmap conversations</div>
+          <div class="ti-desc">Go to each domain team with this SID + ODA derived list. Ask: does this match your roadmap? What's in flight? What's missing? What's the wrong priority?</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot next"></div>
+          <div class="ti-step">Step 2 — Per domain</div>
+          <div class="ti-title">Draft core glossary terms per planned product</div>
+          <div class="ti-desc">For each planned product, draft 2-3 core business concepts. Not validated yet — working drafts. Load as GlossaryTerm nodes marked "draft" in the governance graph.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot next"></div>
+          <div class="ti-step">Step 3 — At In-Review stage</div>
+          <div class="ti-title">EIO validation — 15 minutes per product</div>
+          <div class="ti-desc">When a product reaches In-Review maturity, the relevant EIO validates the glossary terms. Not a definition exercise — a confirmation that the terms match how their function thinks about the data.</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot next"></div>
+          <div class="ti-step">Step 4 — Published</div>
+          <div class="ti-title">Agents can navigate the data landscape autonomously</div>
+          <div class="ti-desc">Published, governed data products with validated glossary terms are findable by AI agents without human direction. Kim's agentic systems have trusted data to work from.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="insight-card" style="margin-bottom:20px;">
+          <div class="ic-icon" style="background:#FFF5EC;">🎯</div>
+          <h4>The conversation with domain teams</h4>
+          <p style="font-size:13px; color:var(--slate); line-height:1.6; margin-top:8px;">
+            <em>"Based on TM Forum SID and Kim's ODA-aligned vision, we believe your domain will need 
+            these data products. Does this match your roadmap? We're not asking you to build them all 
+            now — we're asking you to confirm the direction so we govern them correctly as they're built."</em>
+          </p>
+        </div>
+
+        <div class="insight-card" style="margin-bottom:20px;">
+          <div class="ic-icon" style="background:#F0FDF8;">✅</div>
+          <h4>What we already have</h4>
+          <p style="font-size:13px; color:var(--slate); line-height:1.6; margin-top:8px;">
+            12 of these data products already exist as governed, queryable nodes in the knowledge graph. 
+            The governance agent at <strong>waranara.com/agent</strong> can answer questions about them today. 
+            This is not a theoretical framework — it is running infrastructure.
+          </p>
+        </div>
+
+        <div class="insight-card">
+          <div class="ic-icon" style="background:#EEF5FF;">📐</div>
+          <h4>The operating model will refine this</h4>
+          <p style="font-size:13px; color:var(--slate); line-height:1.6; margin-top:8px;">
+            Kim's merger of GN&T and P&T changes domain boundaries. The operating model document 
+            will tell us how domains are now structured — and may consolidate or split some of the 
+            products listed here. This framework is the starting hypothesis, not the final list.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Data Product Intelligence Agent — Waranara © 2026 · Sahrear Seraj</p>
+  <div class="footer-links">
+    <a href="https://waranara.com/agent">Live Agent →</a>
+    <a href="https://waranara.com/playbook">Playbook →</a>
+    <a href="https://www.tmforum.org/oda/">TM Forum ODA →</a>
+  </div>
+</footer>
+
+<script>
+function showDomain(domain) {
+  // Hide all panels
+  document.querySelectorAll('.domain-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.domain-tab').forEach(t => t.classList.remove('active'));
+
+  // Show selected
+  document.getElementById('panel-' + domain).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
