@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12-Week Daily Planner — Sahrear</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne+Mono&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #e8e4dd;
+  --muted: #6b6860;
+  --green: #4ade80;
+  --green-dim: #1a3d27;
+  --amber: #fbbf24;
+  --amber-dim: #3d2e0a;
+  --blue: #60a5fa;
+  --blue-dim: #0f2040;
+  --purple: #c084fc;
+  --purple-dim: #2d1a40;
+  --red: #f87171;
+  --red-dim: #3d1010;
+  --cert-neo: #00b4d8;
+  --cert-claude: #f97316;
+  --build: #4ade80;
+  --linkedin: #60a5fa;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.header-left h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header-left p {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+  letter-spacing: 0.1em;
+}
+
+/* BUDGET BAR */
+.budget-bar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.budget-item {
+  text-align: center;
+}
+
+.budget-item .val {
+  font-family: 'Syne Mono', monospace;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.budget-item .lbl {
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.2rem;
+}
+
+.budget-item.neo .val { color: var(--cert-neo); }
+.budget-item.claude .val { color: var(--cert-claude); }
+.budget-item.build .val { color: var(--build); }
+.budget-item.li .val { color: var(--linkedin); }
+
+/* WEEK NAV */
+.week-nav {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.week-nav::-webkit-scrollbar { display: none; }
+
+.week-btn {
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.4rem 0.75rem;
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.week-btn:hover { border-color: var(--text); color: var(--text); }
+
+.week-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+  font-weight: 600;
+}
+
+.week-btn .phase-dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  margin: 0.2rem auto 0;
+}
+
+/* MAIN LAYOUT */
+.main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 110px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  position: sticky;
+  top: 110px;
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.week-goal-card {
+  border: 1px solid var(--border);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--surface);
+}
+
+.week-goal-card .goal-type {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.week-goal-card.cert .goal-type { color: var(--cert-neo); }
+.week-goal-card.cert2 .goal-type { color: var(--cert-claude); }
+.week-goal-card.build .goal-type { color: var(--build); }
+.week-goal-card.li .goal-type { color: var(--linkedin); }
+
+.week-goal-card p {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.deliverable-list {
+  margin-top: 1rem;
+}
+
+.deliverable {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.deliverable:last-child { border-bottom: none; }
+
+.deliverable::before {
+  content: '◻';
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+/* DAILY CONTENT */
+.days-panel {
+  padding: 1.5rem 2rem;
+}
+
+.phase-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid;
+  background: var(--surface);
+}
+
+.phase-banner.p1 { border-color: var(--cert-neo); }
+.phase-banner.p2 { border-color: var(--cert-claude); }
+.phase-banner.p3 { border-color: var(--build); }
+
+.phase-banner .phase-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.phase-banner .phase-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.hours-used {
+  margin-left: auto;
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+/* DAY CARD */
+.day-card {
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.day-header {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.day-header:hover { background: var(--surface2); }
+
+.day-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.day-name { color: var(--text); font-weight: 500; }
+.day-date { color: var(--muted); font-size: 0.6rem; margin-top: 0.15rem; }
+
+.day-focus {
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.day-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.time-badge {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid;
+}
+
+.time-badge.eve { border-color: var(--muted); color: var(--muted); }
+.time-badge.day { border-color: var(--amber); color: var(--amber); }
+.time-badge.wknd { border-color: var(--purple); color: var(--purple); }
+
+.stream-tags { display: flex; gap: 0.3rem; }
+
+.stag {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.55rem;
+  padding: 0.15rem 0.4rem;
+  letter-spacing: 0.05em;
+}
+
+.stag.cert { background: rgba(0,180,216,0.15); color: var(--cert-neo); }
+.stag.cert2 { background: rgba(249,115,22,0.15); color: var(--cert-claude); }
+.stag.build { background: rgba(74,222,128,0.15); color: var(--build); }
+.stag.li { background: rgba(96,165,250,0.15); color: var(--linkedin); }
+.stag.admin { background: rgba(192,132,252,0.15); color: var(--purple); }
+
+/* DAY BODY */
+.day-body {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 1.25rem;
+  background: var(--surface2);
+}
+
+.day-body.open { display: block; }
+
+.session-block {
+  margin-bottom: 1.25rem;
+}
+
+.session-block:last-child { margin-bottom: 0; }
+
+.session-time {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.session-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.session-title.cert { color: var(--cert-neo); }
+.session-title.cert2 { color: var(--cert-claude); }
+.session-title.build { color: var(--build); }
+.session-title.li { color: var(--linkedin); }
+.session-title.admin { color: var(--purple); }
+
+.task-list { list-style: none; }
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #c8c4bc;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { color: var(--text); }
+
+.task-check {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--muted);
+  margin-top: 0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  transition: all 0.1s;
+}
+
+.task-item.done .task-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+
+.task-item.done > span { text-decoration: line-through; color: var(--muted); }
+
+.end-of-day {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--green);
+}
+
+.end-of-day .eod-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+}
+
+.end-of-day ul {
+  list-style: none;
+  font-size: 0.78rem;
+  color: #aaa;
+  line-height: 1.7;
+}
+
+.end-of-day ul li::before { content: '✓ '; color: var(--green); }
+
+/* WEEKEND CARD */
+.weekend-card {
+  border: 1px solid var(--purple);
+  background: var(--purple-dim);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.weekend-title {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 0.5rem;
+}
+
+.weekend-body {
+  font-size: 0.82rem;
+  color: #c0b8d0;
+  line-height: 1.6;
+}
+
+/* PROGRESS RING */
+.progress-rings {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.ring-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ring-item svg { flex-shrink: 0; }
+
+.ring-info .ring-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ring-info .ring-val {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.1rem;
+}
+
+.ring-info .ring-val.neo { color: var(--cert-neo); }
+.ring-info .ring-val.claude { color: var(--cert-claude); }
+.ring-info .ring-val.build { color: var(--build); }
+
+/* WEEK COMPLETION */
+.week-complete-check {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px dashed var(--border);
+  text-align: center;
+}
+
+.week-complete-check p {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* UTILITY */
+.chevron { transition: transform 0.2s; font-size: 0.7rem; color: var(--muted); }
+.chevron.open { transform: rotate(180deg); }
+
+/* QUICK LINKS TOOLBAR */
+.quicklinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  align-items: center;
+}
+
+.ql-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.ql-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.62rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.ql-link:hover { color: var(--text); border-color: var(--text); background: var(--surface2); }
+.ql-link.demo { border-color: var(--build); color: var(--build); }
+.ql-link.demo:hover { background: var(--green-dim); }
+.ql-link.neo { border-color: var(--cert-neo); color: var(--cert-neo); }
+.ql-link.neo:hover { background: rgba(0,180,216,0.1); }
+.ql-link.claude { border-color: var(--cert-claude); color: var(--cert-claude); }
+.ql-link.claude:hover { background: rgba(249,115,22,0.1); }
+.ql-link.li { border-color: var(--linkedin); color: var(--linkedin); }
+.ql-link.li:hover { background: var(--blue-dim); }
+
+/* DEPLOY PANEL */
+.deploy-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.deploy-panel.open { display: flex; }
+
+.deploy-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  position: relative;
+}
+
+.deploy-box h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.deploy-box .deploy-sub {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+}
+
+.deploy-step {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.deploy-step:last-of-type { border-bottom: none; }
+
+.deploy-step .step-num {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--build);
+  margin-bottom: 0.4rem;
+}
+
+.deploy-step p {
+  font-size: 0.85rem;
+  color: #c8c4bc;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.deploy-step code {
+  display: block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.85rem;
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--green);
+  margin-top: 0.4rem;
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+.deploy-step code.url { color: var(--cert-neo); }
+
+.deploy-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.deploy-close:hover { color: var(--text); border-color: var(--text); }
+
+/* INLINE LINKS inside task text */
+.task-link {
+  color: var(--cert-neo);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,180,216,0.3);
+  transition: border-color 0.1s;
+  font-size: inherit;
+}
+.task-link:hover { border-color: var(--cert-neo); }
+.task-link.orange { color: var(--cert-claude); border-bottom-color: rgba(249,115,22,0.3); }
+.task-link.orange:hover { border-color: var(--cert-claude); }
+.task-link.green { color: var(--build); border-bottom-color: rgba(74,222,128,0.3); }
+.task-link.green:hover { border-color: var(--build); }
+.task-link.blue { color: var(--linkedin); border-bottom-color: rgba(96,165,250,0.3); }
+.task-link.blue:hover { border-color: var(--linkedin); }
+
+@media (max-width: 768px) {
+  .main { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  .budget-bar { display: none; }
+  .day-header { grid-template-columns: 80px 1fr; }
+  .day-meta { display: none; }
+  .quicklinks { padding: 0.75rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>12-Week Daily Planner</h1>
+    <p>SAHREAR · WARANARA · 1HR/DAY · STARTS WEEK OF 2 JUN 2026</p>
+  </div>
+  <div class="budget-bar">
+    <div class="budget-item neo"><div class="val">Wk 4</div><div class="lbl">Neo4j Exam</div></div>
+    <div class="budget-item claude"><div class="val">Wk 10</div><div class="lbl">CCA-F Exam</div></div>
+    <div class="budget-item build"><div class="val">Wk 12</div><div class="lbl">Phase 2 Live</div></div>
+    <div class="budget-item li"><div class="val">6 Posts</div><div class="lbl">LinkedIn</div></div>
+  </div>
+</div>
+
+<div class="week-nav" id="weekNav"></div>
+
+<div class="progress-rings">
+  <div class="ring-item">
+    <svg width="36" height="36" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#00b4d8" stroke-width="3" stroke-dasharray="0 88" stroke-linecap="round" transform="rotate(-90 18 18)" id="neo-ring"/>
+    </svg>
+    <div class="ring-info"><div class="ring-label">Neo4j Cert</div><div class="ring-val neo" id="neo-prog">0 / 12h</div></div>
+  </div>
+  <div class="ring-item">
+    <svg width="36" height="36" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="0 88" stroke-linecap="round" transform="rotate(-90 18 18)" id="claude-ring"/>
+    </svg>
+    <div class="ring-info"><div class="ring-label">CCA-F Cert</div><div class="ring-val claude" id="claude-prog">0 / 27h</div></div>
+  </div>
+  <div class="ring-item">
+    <svg width="36" height="36" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#4ade80" stroke-width="3" stroke-dasharray="0 88" stroke-linecap="round" transform="rotate(-90 18 18)" id="build-ring"/>
+    </svg>
+    <div class="ring-info"><div class="ring-label">Phase 2 Build</div><div class="ring-val build" id="build-prog">0 / 20h</div></div>
+  </div>
+  <div class="ring-item">
+    <svg width="36" height="36" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+      <circle cx="18" cy="18" r="14" fill="none" stroke="#60a5fa" stroke-width="3" stroke-dasharray="0 88" stroke-linecap="round" transform="rotate(-90 18 18)" id="li-ring"/>
+    </svg>
+    <div class="ring-info"><div class="ring-label">LinkedIn Posts</div><div class="ring-val" style="color:var(--linkedin)" id="li-prog">0 / 6</div></div>
+  </div>
+  <div style="margin-left:auto; font-family:'Syne Mono',monospace; font-size:0.65rem; color:var(--muted); align-self:center; line-height:1.6;">
+    TOTAL BUDGET<br>
+    <span style="color:var(--text); font-size:0.9rem;">60h weekday</span><br>
+    + 17 weekend sessions
+  </div>
+</div>
+
+<!-- QUICK LINKS TOOLBAR -->
+<div class="quicklinks">
+  <span class="ql-label">Quick Links →</span>
+  <a href="https://waranara.com/agent" target="_blank" class="ql-link demo">🌐 waranara.com/agent</a>
+  <a href="https://github.com/sahrear-waranara/data-mesh-intelligence-agent" target="_blank" class="ql-link">⑂ GitHub Repo</a>
+  <a href="https://graphacademy.neo4j.com/certifications/neo4j-certification/" target="_blank" class="ql-link neo">◈ Neo4j Cert Exam</a>
+  <a href="https://graphacademy.neo4j.com/" target="_blank" class="ql-link neo">◈ GraphAcademy</a>
+  <a href="https://anthropic.com/news/claude-partner-network" target="_blank" class="ql-link claude">◆ Claude Partner Network</a>
+  <a href="https://www.claudecertifiedarchitects.com/blog/cca-foundations-exam-guide-2026/" target="_blank" class="ql-link claude">◆ CCA-F Exam Guide</a>
+  <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" class="ql-link claude">◆ Anthropic Docs</a>
+  <a href="https://docs.anthropic.com/en/docs/build-with-claude/mcp" target="_blank" class="ql-link claude">◆ MCP Docs</a>
+  <a href="https://opendataproducts.org/v4.0/schema/odps.yaml" target="_blank" class="ql-link">◇ ODPS v4.0 Schema</a>
+  <a href="https://www.linkedin.com/in/" target="_blank" class="ql-link li">in LinkedIn Profile</a>
+  <a href="https://www.canva.com" target="_blank" class="ql-link">✦ Canva</a>
+  <button onclick="document.getElementById('deployPanel').classList.add('open')" class="ql-link" style="cursor:pointer;background:none;font-family:'Syne Mono',monospace;">🚀 Host on Waranara</button>
+</div>
+
+<!-- DEPLOY MODAL -->
+<div class="deploy-panel" id="deployPanel">
+  <div class="deploy-box">
+    <button class="deploy-close" onclick="document.getElementById('deployPanel').classList.remove('open')">✕ Close</button>
+    <h3>Host on waranara.com/planner</h3>
+    <div class="deploy-sub">GITHUB PAGES · SAME PATTERN AS waranara.com/agent · 5 MINUTES</div>
+
+    <div class="deploy-step">
+      <div class="step-num">Step 1 — Download this file</div>
+      <p>Save this HTML file to your computer as <strong>planner.html</strong></p>
+    </div>
+
+    <div class="deploy-step">
+      <div class="step-num">Step 2 — Open your waranara.github.io repo in VS Code</div>
+      <p>This is the separate repo that hosts waranara.com. You said you keep two VS Code windows open — this is the website window.</p>
+      <code>cd waranara.github.io</code>
+    </div>
+
+    <div class="deploy-step">
+      <div class="step-num">Step 3 — Add the file</div>
+      <p>Copy planner.html into the root of the waranara.github.io repo (same level as agent.html and index.html).</p>
+      <code>cp ~/Downloads/planner.html ./planner.html</code>
+    </div>
+
+    <div class="deploy-step">
+      <div class="step-num">Step 4 — Commit and push</div>
+      <p>In your VS Code terminal (or Git UI):</p>
+      <code>git add planner.html
+git commit -m "feat: add 12-week daily planner"
+git push origin main</code>
+    </div>
+
+    <div class="deploy-step">
+      <div class="step-num">Step 5 — It's live</div>
+      <p>GitHub Pages deploys in ~60 seconds. Your planner is now permanently at:</p>
+      <code class="url">https://waranara.com/planner</code>
+      <p style="margin-top:0.75rem; font-size:0.78rem; color:var(--muted);">No login. Works on any device. Bookmark it on your phone.</p>
+    </div>
+
+    <div class="deploy-step">
+      <div class="step-num">Optional — Add a link from waranara.com/agent</div>
+      <p>In agent.html, add a small nav link so you can jump between the demo and the planner:</p>
+      <code>&lt;a href="/planner" style="..."&gt;12-Week Plan&lt;/a&gt;</code>
+    </div>
+
+    <div class="deploy-step">
+      <div class="step-num">Bookmark on iPhone / Android</div>
+      <p>On mobile Safari: open waranara.com/planner → Share → Add to Home Screen. It opens full-screen like an app with no browser chrome.</p>
+      <p>On Android Chrome: open the URL → three-dot menu → Add to Home Screen.</p>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="days-panel" id="daysPanel"></div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const WEEKS = [
+  {
+    num: 1, label: "Wk 1", phase: "p1",
+    phaseTitle: "Phase 1 — Neo4j Cert Foundation + LinkedIn Post 1",
+    hours: "5h this week (5×1h eve)",
+    goals: [
+      { type: "cert", label: "Neo4j Cert", text: "Complete GraphAcademy: Neo4j Fundamentals + Cypher Fundamentals courses" },
+      { type: "li", label: "LinkedIn", text: "Post 1 draft complete — The Retrofitting Tax" },
+      { type: "admin", label: "Admin", text: "Join Claude Partner Network (free) → unlock CCA-F registration path" }
+    ],
+    deliverables: [
+      "GraphAcademy account created, 2 courses started",
+      "Partner Network application submitted",
+      "Post 1 rough draft in notes/doc"
+    ],
+    weekend: "1.5h — Read CCA-F exam blueprint (claudecertifiedarchitects.com). Skim all 5 domains. Highlight Domain 1 (Agentic Architecture 27%) — this maps directly to your PoC.",
+    days: [
+      { name: "Mon", focus: "GraphAcademy setup + Neo4j Fundamentals start", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Neo4j Certified Professional — Day 1",
+          tasks:["Create account at graphacademy.neo4j.com","Enroll in 'Neo4j Fundamentals' course (free)","Complete Module 1: What is a Graph Database? (≈25 min)","Complete Module 2: Nodes, Relationships, Properties (≈25 min)","Note: you already know 80% of this — move fast"],
+          eod:["GraphAcademy account live","Module 1+2 of Neo4j Fundamentals done","Know the 5 property graph model components by name"]}]},
+      { name: "Tue", focus: "Neo4j Fundamentals complete + Cypher basics", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Neo4j Cert — Neo4j Fundamentals finish",
+          tasks:["Complete remaining modules of Neo4j Fundamentals (≈40 min)","Start Cypher Fundamentals Module 1: MATCH and RETURN (≈20 min)","Write 3 Cypher queries from memory — MATCH, WHERE, RETURN pattern"],
+          eod:["Neo4j Fundamentals course complete","Cypher MATCH syntax memorised","Can write a basic node lookup without docs"]}]},
+      { name: "Wed", focus: "Partner Network signup + Post 1 outline", streams: ["admin","li"],
+        sessions: [{time:"8:00–9:00pm", type:"admin", title:"Admin + LinkedIn Post 1 Outline",
+          tasks:["Go to anthropic.com/news/claude-partner-network — apply for Partner Network (free tier)","Takes 1-2 weeks to process — submit today","Open linkedin_posts.md — read Post 1 (Discovery Agent) and new strategy Post 1 (Retrofitting Tax)","Decide: blend them or use Retrofitting Tax as the lead. Write a 5-bullet outline.","Save outline in a Google Doc or Notion — this is your content workspace"],
+          eod:["Partner Network application submitted","Post 1 outline exists with opening line drafted","Content workspace created"]}]},
+      { name: "Thu", focus: "Cypher Fundamentals — MATCH patterns deep", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Cypher Fundamentals — Pattern Matching",
+          tasks:["Complete Cypher Fundamentals Module 2: Filtering with WHERE","Complete Module 3: Working with Relationships","Practice: write the 3 key queries from your PoC from memory","MATCH (d:DomainEntity)-[:MANAGES]->(p:DataProduct) WHERE d.name CONTAINS 'Customer' RETURN p.name","MATCH (p:DataProduct) WHERE NOT (p)-[:STEWARDED_BY]->() RETURN p.name","This is exam-relevant AND reinforces your PoC knowledge simultaneously"],
+          eod:["Cypher WHERE and relationship traversal solid","Can write relationship pattern queries without docs","PoC queries memorised — useful for LinkedIn demos too"]}]},
+      { name: "Fri", focus: "Post 1 first draft written", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"LinkedIn Post 1 — First Draft",
+          tasks:["Open your 5-bullet outline from Wednesday","Write the full post — target 250-320 words","Opening line must work as a standalone sentence — the 'three months after go-live' scenario","Include: the cost frame (3-5x retrofitting), Principle 4 name, close with 'link in comments'","Don't edit yet. Just write. Raw draft only tonight.","Save in content workspace"],
+          eod:["Post 1 full rough draft exists","Opening line is strong and scenario-specific","No editing done — that's next week"]}]}
+    ]
+  },
+  {
+    num: 2, label: "Wk 2", phase: "p1",
+    phaseTitle: "Phase 1 — Neo4j Deep + Post 1 Final",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert", label: "Neo4j Cert", text: "Complete Cypher Fundamentals + Graph Data Modeling courses" },
+      { type: "li", label: "LinkedIn", text: "Post 1 edited, image created, scheduled for Tuesday Week 3" },
+    ],
+    deliverables: [
+      "Cypher Fundamentals course complete",
+      "Graph Data Modeling course started",
+      "Post 1 final copy + image ready to publish",
+      "CCA-F exam blueprint read (weekend)"
+    ],
+    weekend: "1.5h — Complete CCA-F blueprint reading. Map each domain to your existing PoC: Domain 1 (agentic loop) = your graph_chain.py. Domain 3 (CLAUDE.md) = your persistent schema prompt. This mapping is your study shortcut.",
+    days: [
+      { name: "Mon", focus: "Cypher Fundamentals — CREATE, MERGE, aggregation", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Cypher Fundamentals — Writing + Aggregating",
+          tasks:["Complete Module 4: Creating Nodes and Relationships (CREATE, MERGE)","Complete Module 5: Aggregating Data (COUNT, AVG, COLLECT)","Key exam topic: MERGE vs CREATE — know the idempotency difference","Relevance to PoC: your ingest.py uses MERGE — this is why","Practice: write a MERGE query that upserts a DataProduct node"],
+          eod:["MERGE semantics understood — idempotent upsert pattern","COUNT and AVG aggregation syntax solid","Can explain why your ingest.py uses MERGE not CREATE"]}]},
+      { name: "Tue", focus: "Post 1 edit + refine", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"LinkedIn Post 1 — Edit Session",
+          tasks:["Read the rough draft cold — first impression matters","Cut anything that sounds like a framework presentation — this must sound like a delivery lead talking to another delivery lead","Check: does line 1 stop the scroll? If not, rewrite it first","Check: is Principle 4 named exactly once — not overused?","Check: is the close a single question that invites comments?","Final word count: 250-300 words max"],
+          eod:["Post 1 edited copy exists","Reads like a practitioner, not a consultant","Opening line works as a standalone pull quote"]}]},
+      { name: "Wed", focus: "Graph Data Modeling course start", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Graph Data Modeling — Foundations",
+          tasks:["Enroll in 'Graph Data Modeling Fundamentals' on GraphAcademy","Complete Module 1: Introduction to Graph Data Modeling","Complete Module 2: Identifying Entities — nodes vs relationships","Exam relevance: 20% of Neo4j cert is modeling — this is high yield","Map to your PoC: why is Asset-Lineage-Link a node, not a relationship? That's a modeling decision. Know the reasoning."],
+          eod:["Graph modeling fundamentals covered","Can explain the intermediate node pattern (your Asset-Lineage-Link design)","Understand when to make a relationship a node"]}]},
+      { name: "Thu", focus: "Post 1 image + hashtags", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"LinkedIn Post 1 — Visual + Final Prep",
+          tasks:["Create the image: two timeline diagram — governance-during-migration vs governance-after","Use Canva (free) — dark background, two diverging cost lines, label the gap","Keep it simple: the image should take 5 seconds to understand","Add hashtag block: #DataMesh #DataGovernance #DataArchitecture #FederatedGovernance #AgenticAI #Databricks #CloudMigration #EnterpriseAI","Schedule via LinkedIn: Tuesday of Week 3, 9:00am AEST","Write the first comment now (link to waranara.com/agent) — ready to post immediately after publish"],
+          eod:["Image created and saved","Post scheduled for Tuesday Week 3 at 9am","First comment with link drafted and saved"]}]},
+      { name: "Fri", focus: "Graph Data Modeling — properties + relationships", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Graph Data Modeling — Properties Deep",
+          tasks:["Complete Module 3: Relationship Types and Directionality","Complete Module 4: Avoiding Anti-Patterns (very exam-relevant)","Key anti-patterns to know: generic relationship names, overloading node labels, duplicate data in both nodes","Take notes on 3 anti-patterns you avoided in your governance ontology","This reinforces your ontology design choices AND prepares for exam"],
+          eod:["Graph modeling anti-patterns memorised — 3 key ones","Can explain your ontology design decisions in exam language","Graph Data Modeling course ≈50% done"]}]}
+    ]
+  },
+  {
+    num: 3, label: "Wk 3", phase: "p1",
+    phaseTitle: "Phase 1 — Neo4j Exam Prep + Post 1 Published",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert", label: "Neo4j Cert", text: "Complete all GraphAcademy prep courses — exam ready" },
+      { type: "li", label: "LinkedIn", text: "Post 1 published Tuesday. Post 2 outline started." },
+    ],
+    deliverables: [
+      "Post 1 live on LinkedIn — engage comments within 60 min",
+      "All Neo4j GraphAcademy prep courses complete",
+      "Post 2 outline drafted (Principle 4 Explained)",
+      "CCA-F Domain 1 study started"
+    ],
+    weekend: "1.5h — CCA-F Domain 1 deep study: Agentic Architecture & Orchestration. Focus on agentic loop mechanics, hub-and-spoke pattern, stop_reason: tool_use vs end_turn. Map directly to your graph_chain.py design.",
+    days: [
+      { name: "Mon", focus: "Graph Data Modeling complete + Importing Data start", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Neo4j Cert — Modeling Complete",
+          tasks:["Complete remaining Graph Data Modeling modules","Start 'Importing Data into Neo4j' course — Module 1: LOAD CSV","Exam has ≈10% on importing — this course is fast","Note: your ingest.py uses the Bolt driver, not LOAD CSV — know both approaches","LOAD CSV syntax: LOAD CSV WITH HEADERS FROM 'file:///data.csv' AS row MERGE (n:Node {id: row.id})"],
+          eod:["Graph Data Modeling course complete ✓","LOAD CSV syntax memorised","Know difference between Bolt driver and LOAD CSV approaches"]}]},
+      { name: "Tue", focus: "POST 1 PUBLISHED — engage comments", streams: ["li"],
+        sessions: [{time:"9:00am (daytime)", type:"li", title:"🚀 Post 1 Goes Live — Engagement Hour",
+          tasks:["9:00am: Post publishes automatically (scheduled last week)","Post the first comment immediately: 'Happy to share the working demo — waranara.com/agent'","Stay on LinkedIn for the first 60 minutes responding to every comment","Notify Shailesh with a casual message: 'Wrote this up — relevant to what we discussed'","Screenshot any notable comments for future content","8:00pm: Review analytics — note impressions, reactions, comments"],
+          eod:["Post 1 live with first comment posted","Responded to all early comments","Shailesh notified","Analytics baseline noted"]}]},
+      { name: "Wed", focus: "Neo4j practice queries + Post 2 outline", streams: ["cert","li"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Exam Practice + Post 2 Outline (split session)",
+          tasks:["30 min — Neo4j exam practice: do the GraphAcademy practice quiz for Cypher Fundamentals","Note any questions you got wrong — these are your weak spots","20 min — Post 2 outline: Principle 4 Explained","Post 2 angle: 'Everyone talks data mesh. Most stop at Principle 3. Here's what Principle 4 actually means in practice.'","Include one Cypher snippet showing the STEWARDED_BY gap — signals Neo4j fluency without announcing it","10 min — write the opening line"],
+          eod:["Cypher practice quiz done — weak spots identified","Post 2 5-bullet outline exists","Post 2 opening line drafted"]}]},
+      { name: "Thu", focus: "Neo4j exam practice — full mock run", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Neo4j Cert — Mock Exam Simulation",
+          tasks:["Do the full GraphAcademy Neo4j Certified Professional practice exam (30 questions, 45 min)","Do not look anything up — simulate real exam conditions","Score yourself. Need 80%+ to pass the real exam.","For any wrong answers: look up the concept, take one note","If score ≥ 80%: book the real exam for this week Friday or next Monday","If score < 80%: identify the weakest domain and review tomorrow"],
+          eod:["Mock exam score recorded","Weak domains identified","Exam booking decision made"]}]},
+      { name: "Fri", focus: "Neo4j exam prep OR take exam (if ready)", streams: ["cert"],
+        sessions: [{time:"8:00–9:00pm", type:"cert", title:"Neo4j Cert — Final Prep or Exam",
+          tasks:["If mock score was ≥80%: Take the real exam now at graphacademy.neo4j.com/certifications/neo4j-certification/","Exam is 30 questions, 45 minutes, online, no proctor","Score ≥80% to pass. You likely pass first attempt given your hands-on experience.","If mock score was <80%: Review weakest domain notes, retake mock tomorrow (weekend)","After exam (pass or not): add LinkedIn certification to your profile immediately"],
+          eod:["Neo4j Certified Professional exam attempted","If passed: certificate URL saved, LinkedIn profile updated","If not passed: retake plan in place for weekend"]}]}
+    ]
+  },
+  {
+    num: 4, label: "Wk 4", phase: "p1",
+    phaseTitle: "Phase 1 — Neo4j CERTIFIED + Post 2 Published",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert", label: "Neo4j Cert", text: "Neo4j Certified Professional — DONE ✓ (if not done in Wk 3)" },
+      { type: "li", label: "LinkedIn", text: "Post 2 written, published Tuesday" },
+      { type: "cert2", label: "CCA-F", text: "Domains 1+2 study underway" }
+    ],
+    deliverables: [
+      "Neo4j Certified Professional credential on LinkedIn profile",
+      "Post 2 live (Principle 4 Explained — with Cypher snippet)",
+      "CCA-F Domains 1+2 notes complete",
+      "Partner Network confirmation received (check email)"
+    ],
+    weekend: "1.5h — CCA-F Domain 2: Tool Design & MCP Integration. Focus on MCP server design, tool boundary management, SSE transport. This maps to your Phase 2 build — the knowledge graph as an MCP tool.",
+    days: [
+      { name: "Mon", focus: "Post 2 first draft + CCA-F Domain 1 review", streams: ["li","cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 2 Draft + CCA-F Domain 1 Notes",
+          tasks:["30 min — Write Post 2 first draft: Principle 4 Explained","Include the Cypher snippet: MATCH (p:DataProduct) WHERE NOT (p)-[:STEWARDED_BY]->() RETURN p.name","Frame it as: 'This is not a query. It's a governance signal.'","30 min — CCA-F Domain 1 consolidation: re-read your weekend notes","Write 3 sentences summarising what you understand about agentic loops in your own words"],
+          eod:["Post 2 rough draft exists","3-sentence agentic loop summary written in your own words"]}]},
+      { name: "Tue", focus: "Post 2 edited + Neo4j cert confirmed", streams: ["li","cert"],
+        sessions: [{time:"8:00–9:00pm (or 9am if cert publish)", type:"li", title:"Post 2 Edit + Cert Profile Update",
+          tasks:["If Neo4j cert not yet done: take it NOW (first 15 min of session)","Update LinkedIn profile: add Neo4j Certified Professional to credentials section","Edit Post 2 draft — same rules as Post 1: practitioner voice, no jargon","Schedule Post 2 for Tuesday Week 5 at 9am","Write first comment: 'The STEWARDED_BY query is live on the agent at waranara.com/agent — try it.'"],
+          eod:["Neo4j cert on LinkedIn profile ✓","Post 2 scheduled for Week 5 Tuesday"]}]},
+      { name: "Wed", focus: "CCA-F Domain 2 — MCP deep study", streams: ["cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Tool Design & MCP Integration",
+          tasks:["Study CCA-F Domain 2: Tool Design and MCP Integration (18% of exam)","Key topics: MCP server vs client architecture, SSE transport vs stdio, tool schema design","Critical insight: your Phase 2 build will expose the Neo4j knowledge graph as an MCP tool","Studying this domain IS building your architecture plan — double value","Read: Anthropic's MCP documentation intro (docs.anthropic.com/mcp)","Write: one paragraph describing how your knowledge graph becomes an MCP server"],
+          eod:["MCP client/server distinction clear","SSE vs stdio trade-offs understood","One-paragraph MCP architecture plan for Phase 2 written"]}]},
+      { name: "Thu", focus: "CCA-F Domain 3 — Claude Code start", streams: ["cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Claude Code Configuration",
+          tasks:["Study CCA-F Domain 3: Claude Code Configuration & Workflows (20% of exam)","Key topics: CLAUDE.md hierarchy, custom slash commands, CI/CD integration, persistent context","Your EXISTING graph_chain.py system prompt IS a persistent context — this is your real-world evidence","Action: create a CLAUDE.md file in your repo tonight","Add your graph schema, Cypher rules, and key design decisions to it","This is simultaneously exam prep AND a genuine improvement to your development workflow"],
+          eod:["CLAUDE.md created in your repo with graph schema context","Understand CLAUDE.md hierarchy (project > folder > user)","Can explain how persistent context reduces per-session overhead"]}]},
+      { name: "Fri", focus: "Week 4 review + Phase 2 architecture plan", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Architecture — Gap Detector Design",
+          tasks:["Open SDD v2.1 — read Phase 2 planned curation actions section","Sketch the gap_detector.py architecture: what Cypher queries does it run? What does it write to SQLite?","Gap queries needed: 8 products without STEWARDED_BY, 10 contracts with null terms, 6 products without glossary terms","Write pseudocode for the main loop: query → identify gaps → write to gap_queue","This is design work only tonight — no code yet","Save the pseudocode in a new file: docs/phase2_design.md"],
+          eod:["Phase 2 gap detector pseudocode exists in docs/","Gap query list written — 5 queries identified","gap_queue SQLite schema sketched"]}]}
+    ]
+  },
+  {
+    num: 5, label: "Wk 5", phase: "p2",
+    phaseTitle: "Phase 2 — CCA-F Study + Phase 2 Build Starts + Post 3",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert2", label: "CCA-F", text: "Domains 1–3 solid. Domain 4 (Prompt Engineering) underway." },
+      { type: "build", label: "Phase 2", text: "gap_detector.py first working version" },
+      { type: "li", label: "LinkedIn", text: "Post 2 published. Post 3 outline started (The PoC as Proof)." }
+    ],
+    deliverables: [
+      "Post 2 live Tuesday — engage comments",
+      "gap_detector.py runs and identifies at least 3 gap types",
+      "CCA-F Domains 1–3 notes complete",
+      "Post 3 outline drafted"
+    ],
+    weekend: "1.5h — Build session: gap_detector.py implementation. Connect to Neo4j, run the 5 gap queries, print results to console. No SQLite yet — just prove the queries work.",
+    days: [
+      { name: "Mon", focus: "gap_detector.py — Cypher gap queries", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Gap Detector Queries",
+          tasks:["Create agent/gap_detector.py","Import Neo4j driver from your existing ingest.py pattern","Write and test Query 1: products with no STEWARDED_BY relationship","Write and test Query 2: contracts with null or empty contract_terms","Write and test Query 3: products with no CLASSIFIED_BY_TERM relationships","Run each query against your live AuraDB — verify counts match expectations (8, 10, 6)","Commit to GitHub: feat: gap detector initial queries"],
+          eod:["gap_detector.py exists in agent/","3 gap queries running correctly against live Neo4j","Counts verified: 8, 10, 6 as expected"]}]},
+      { name: "Tue", focus: "POST 2 PUBLISHED — engage", streams: ["li"],
+        sessions: [{time:"9:00am", type:"li", title:"🚀 Post 2 Live — Principle 4 Explained",
+          tasks:["9:00am: Post 2 publishes","Post first comment immediately with waranara.com/agent link","Engage all comments in first 60 min","Note: the Cypher snippet in Post 2 signals Neo4j fluency — watch for architect/engineer engagement","Share in relevant Accenture internal Slack/Teams channels same day","8:00pm: Review analytics — how does reach compare to Post 1?"],
+          eod:["Post 2 live, first comment posted","All early comments responded to","Internal share done"]}]},
+      { name: "Wed", focus: "CCA-F Domain 4 — Prompt Engineering", streams: ["cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Prompt Engineering & Structured Output",
+          tasks:["Study CCA-F Domain 4: Prompt Engineering & Structured Output (20% of exam)","Key topics: JSON schema enforcement, few-shot techniques, validation retry loops","Your existing Cypher generation prompt in graph_chain.py is a real-world example","Exam question type: 'An agent returns malformed JSON — what's the correct fix?' Answer: validation retry loop, not stronger prompt","Study: Anthropic's prompt engineering guide (docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)","Write: one improved system prompt using XML tags for your graph_chain.py — exam prep AND real improvement"],
+          eod:["JSON schema enforcement pattern understood","Validation retry loop pattern memorised","Improved system prompt with XML tags written"]}]},
+      { name: "Thu", focus: "gap_detector.py — SQLite gap_queue", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — gap_queue SQLite",
+          tasks:["Add SQLite to gap_detector.py: create gap_queue table","Schema: gap_id, product_id, product_name, gap_type, detected_at, status (pending/approved/rejected)","Write the insert logic: for each gap found, MERGE into gap_queue (avoid duplicates)","Test: run gap_detector.py — verify gap_queue.db populates correctly","Print a summary at end: 'Gap scan complete. 23 gaps detected across 3 types.'","Commit: feat: gap_queue SQLite integration"],
+          eod:["gap_queue.db creates and populates on run","23 gaps (approx) correctly logged","Summary print works — shows counts by gap type"]}]},
+      { name: "Fri", focus: "Post 3 outline — The PoC as Proof", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 3 Outline — Demo Post",
+          tasks:["Post 3 is your demo post — waranara.com/agent as the accelerator evidence","Blend existing Post 1 (Discovery Agent) from linkedin_posts.md with new strategy Post 3 framing","Opening: 'Ask it which data products are approved for model training. 3 seconds. Grounded answer.'","Key additions vs original: migration connection explicit, $25/month cost named, CLAUDE.md mention","Weave in: built with Claude Code — CLAUDE.md carries graph schema as persistent project context","Outline: 5 bullets, opening line, close CTA","Video plan: 60s screen record — waranara.com/agent demo, 2 governance questions"],
+          eod:["Post 3 outline complete with migration angle","CLAUDE.md signal identified as CCA-F Domain 3 proof point","Video script written in one paragraph"]}]}
+    ]
+  },
+  {
+    num: 6, label: "Wk 6", phase: "p2",
+    phaseTitle: "Phase 2 — CCA-F Domain 5 + Approval Logic + Post 3",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert2", label: "CCA-F", text: "All 5 domains studied. Begin practice questions." },
+      { type: "build", label: "Phase 2", text: "3-gate approval logic designed. Gate 1 implemented." },
+      { type: "li", label: "LinkedIn", text: "Post 3 written, video recorded, scheduled for Tuesday Week 7." }
+    ],
+    deliverables: [
+      "CCA-F all 5 domain notes complete",
+      "Approval gate 1 logic in code",
+      "Post 3 final copy + 60s video recorded",
+      "Post 3 scheduled for Wk 7 Tuesday"
+    ],
+    weekend: "1.5h — CCA-F practice questions: do 30 scenario-based questions from claudecertifiedarchitects.com or Udemy practice set. Score yourself. Note which domains are weakest.",
+    days: [
+      { name: "Mon", focus: "CCA-F Domain 5 — Context Management", streams: ["cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Context Management & Reliability",
+          tasks:["Study CCA-F Domain 5: Context Management & Reliability (15% of exam)","Key topics: CALM framework, prompt caching with cache_control, conversation compaction, token budgeting","Connection to your PoC: knowledge graph pre-filtering IS context management — graph returns 4 fields, not 664 nodes","Exam insight: this is the lightest domain but easiest marks — study it well","Write: one paragraph explaining how your graph reduces context window requirements","This paragraph becomes part of Post 3 and Post 4 content"],
+          eod:["CALM framework understood","Prompt caching breakpoints concept clear","One-paragraph context reduction explanation written — dual purpose: exam notes + LinkedIn content"]}]},
+      { name: "Tue", focus: "Phase 2 — approval_handler.py Gate 1", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Gate 1 Approval Logic",
+          tasks:["Create bot/approval_handler.py","Implement Gate 1: Should we ask? — reads gap_queue, filters status=pending","For each pending gap: check if domain lead has already approved asking","Output: list of approved gaps ready to message product owners about","Test: run against gap_queue.db — verify filtering works","This is not the Slack messaging yet — just the gate logic","Commit: feat: gate1 approval filtering"],
+          eod:["approval_handler.py created","Gate 1 filtering logic works against live gap_queue","Output: list of approved-to-ask gaps printed correctly"]}]},
+      { name: "Wed", focus: "Post 3 first draft", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 3 — First Draft (Demo Post)",
+          tasks:["Write Post 3 in full — this is your most important post","Open with the live demo hook: 'Ask it: which data products are approved for model training?'","Para 2: the stack — Neo4j + LangChain + Claude Sonnet + Railway = $25/month","Para 3: the migration connection — same pattern, same ontology, Fabric IQ in enterprise","Para 4: two problems solved — token cost + hallucination grounding","Para 5: CLAUDE.md as persistent context (CCA-F signal, subtle)","Close: 'If you're scoping a data platform migration — DM me.'","Target: 280-320 words"],
+          eod:["Post 3 full draft exists","Migration angle is explicit","CLAUDE.md mention is natural, not forced"]}]},
+      { name: "Thu", focus: "Video record for Post 3", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 3 — Screen Record Video",
+          tasks:["Set up: clean desktop, browser open to waranara.com/agent","Record 60 seconds using Snipping Tool (you already know this workflow)","Scene 1 (0-20s): type 'which data products are approved for model training?' — let answer render","Scene 2 (20-40s): type 'which data products have no assigned data steward?' — show 8 products","Scene 3 (40-55s): switch to Neo4j Browser — show the graph view briefly","Scene 4 (55-60s): back to waranara.com/agent — end where you started","Edit in Clipchamp: add text overlay 'Natural language in. Governance answers out.'","Export and save"],
+          eod:["60s video recorded and exported","Two governance questions answered on screen","Text overlay added"]}]},
+      { name: "Fri", focus: "Post 3 final + schedule", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 3 — Final Edit + Schedule",
+          tasks:["Edit Post 3 copy — apply practitioner voice check","Attach the 60s video","Add hashtags: #DataMesh #DataGovernance #AgenticAI #KnowledgeGraph #Databricks #CloudMigration #Neo4j #ClaudeAI","Schedule for Tuesday Week 7 at 9:00am AEST","Write first comment now: 'Full architecture walkthrough at waranara.com/agent — no login required'","Also write the internal share message to send to Shailesh same day as publish"],
+          eod:["Post 3 scheduled with video attached","First comment and internal message drafted and saved","Week 6 complete"]}]}
+    ]
+  },
+  {
+    num: 7, label: "Wk 7", phase: "p2",
+    phaseTitle: "Phase 2 — CCA-F Practice + Slack Curation + Post 3 Live",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert2", label: "CCA-F", text: "50 practice questions done. Weak domains reinforced." },
+      { type: "build", label: "Phase 2", text: "Slack DM messaging to product owners working" },
+      { type: "li", label: "LinkedIn", text: "Post 3 live. Post 4 outline (Agentic Grounding)." }
+    ],
+    deliverables: [
+      "Post 3 live + video — engage comments + share with Shailesh",
+      "Slack proactive DM to test user working from gap_queue",
+      "CCA-F practice: 50 questions done",
+      "Post 4 outline (Agentic Grounding — hub-and-spoke pattern)"
+    ],
+    weekend: "1.5h — Build session: Slack Block Kit approval card. Design the Gate 3 card layout (Product, Gap, Owner reply, Proposed write, Approve/Reject buttons). Don't wire up yet — just build the card JSON.",
+    days: [
+      { name: "Mon", focus: "Slack curation bot — proactive DM", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Slack Proactive DM",
+          tasks:["In slack_bot.py: add a new function send_gap_dm(product_owner_id, gap_type, product_name)","For each approved gap in gap_queue: send a DM to the product owner Slack user","DM template: 'Hi [name] — the governance agent detected a gap in [Product]: no DataSteward assigned. Can you nominate someone? Reply with their name and I'll update the knowledge graph after approval.'","Test: send to yourself first — verify message renders correctly","Add rate limiting: max 3 DMs per run to avoid spam","Commit: feat: proactive gap DM messaging"],
+          eod:["Slack DM function works — sends to a test user","Rate limiting in place","DM template is clear and professional"]}]},
+      { name: "Tue", focus: "POST 3 LIVE — engage + share with Shailesh", streams: ["li"],
+        sessions: [{time:"9:00am", type:"li", title:"🚀 Post 3 Live — The PoC Demo Post",
+          tasks:["9:00am: Post 3 publishes with video","Post first comment immediately","Engage all comments in first 60 min — this post will get more traction than 1 and 2","Send the internal message to Shailesh: 'Wrote this up with a working demo — the pattern applies directly to [programme] migration scope. Happy to show it.'","Share in Accenture internal Data & AI community channel","8:00pm: Check if Shailesh responded — if yes, suggest a 30-min demo meeting"],
+          eod:["Post 3 live with video","Shailesh notified — watch for response","Internal community share done"]}]},
+      { name: "Wed", focus: "CCA-F practice questions — batch 2", streams: ["cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Practice Questions (30 more)",
+          tasks:["Complete 30 more scenario-based practice questions","Focus on your weakest domain from last weekend's practice set","Scenario type to master: 'An agent is calling a tool but the response is unparseable. What's the architectural fix?'","Answer pattern: add a validation retry loop with the error as context, not a stronger prompt","Write down 5 scenarios where you initially chose wrong — these are your exam risk points","Total practice questions to date: 50+"],
+          eod:["50+ practice questions completed total","5 risk scenarios written down","Know which domain needs most attention before exam"]}]},
+      { name: "Thu", focus: "Post 4 outline — Agentic Grounding Problem", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 4 Outline — Hub-and-Spoke Architecture",
+          tasks:["Post 4 is your CCA-F Domain 1 signal post — agentic architecture patterns made visible","Opening: 'An agent that doesn't know a data contract is breached will confidently use that data. That's not an AI problem. That's a governance problem.'","Structure: scenario → failure mode → hub-and-spoke solution → your PoC as proof","The hub-and-spoke frame: knowledge graph = hub, data products = spokes, governance check = gate in agentic loop","Include: the routing diagram concept — agent query → graph metadata check → contract status → approved/blocked","This signals CCA-F Domain 1 mastery to any architect reading","Target audience: partners pitching AI on data platform engagements"],
+          eod:["Post 4 5-bullet outline with hub-and-spoke frame","Opening line drafted","Routing diagram sketch on paper or in Excalidraw"]}]},
+      { name: "Fri", focus: "Slack reply parsing + Gate 2", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Reply Parsing + Gate 2",
+          tasks:["In slack_bot.py: add reply parsing when a product owner responds to a gap DM","Gate 2 logic: validate the response format","For steward nomination: does the reply contain a recognisable name? Party node lookup in Neo4j to verify.","If valid: update gap_queue status to 'validated', store the proposed write","If ambiguous: send a clarifying DM — 'Did you mean [name]? Reply YES to confirm.'","Test with yourself: send a reply to your own gap DM, verify parsing catches it","Commit: feat: reply parsing and gate2 validation"],
+          eod:["Reply parsing working for steward nomination case","Gate 2 validates format correctly","Ambiguous response handling in place"]}]}
+    ]
+  },
+  {
+    num: 8, label: "Wk 8", phase: "p2",
+    phaseTitle: "Phase 2 — CCA-F Final Prep + Neo4j Writeback + Post 4",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert2", label: "CCA-F", text: "80+ practice questions. Final domain review. Exam booked." },
+      { type: "build", label: "Phase 2", text: "Neo4j writeback working for steward nomination case" },
+      { type: "li", label: "LinkedIn", text: "Post 4 written and scheduled (Wk 9 Tuesday)" }
+    ],
+    deliverables: [
+      "CCA-F exam booked on Skilljar for Week 10",
+      "Neo4j writeback: STEWARDED_BY relationship created from Slack reply",
+      "Post 4 final copy + routing diagram image",
+      "Post 4 scheduled for Wk 9 Tuesday"
+    ],
+    weekend: "1.5h — CCA-F full mock exam: 60 questions, 120 minutes, no lookups. Score yourself. Must hit 720/1000 (72%) to have confidence for the real exam.",
+    days: [
+      { name: "Mon", focus: "Neo4j writeback — STEWARDED_BY creation", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Neo4j Writeback",
+          tasks:["Create pipeline/writeback.py","Function: create_steward_relationship(product_id, party_id)","Cypher: MATCH (p:DataProduct {product_id: $product_id}), (party:Party {party_id: $party_id}) MERGE (p)-[:STEWARDED_BY]->(party)","Log the write to writeback_log table in SQLite: timestamp, product_id, gap_type, written_by, gate3_approved_by","Test: run against a test product in your AuraDB — verify the relationship appears in Neo4j Browser","This is Gate 3 execution — the graph gets updated after human approval","Commit: feat: neo4j writeback STEWARDED_BY"],
+          eod:["writeback.py creates STEWARDED_BY relationships correctly","writeback_log table populated on each write","Verified in Neo4j Browser that relationship appears"]}]},
+      { name: "Tue", focus: "Book CCA-F exam + CCA-F weak domain final review", streams: ["cert2","admin"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Book Exam + Weak Domain Drill",
+          tasks:["Register for CCA-F exam via Skilljar (anthropic's platform) — select a date in Week 10","Cost: $99 USD — this is the investment, book it now to create commitment","30 min — drill your weakest domain one more time with focused notes","Review your 5 risk scenarios from Week 7","The exam tests production decisions, not theory — every answer should come from 'what would I do in my PoC?'","If unsure on any concept: your PoC is your anchor. You have real experience."],
+          eod:["CCA-F exam booked — date confirmed in Week 10","Weak domain notes refreshed","Exam booking confirmation saved"]}]},
+      { name: "Wed", focus: "Post 4 first draft — Agentic Grounding", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 4 Draft — The Agentic Grounding Problem",
+          tasks:["Write Post 4 in full from your outline","Opening: the breached contract scenario — agent doesn't know, uses bad data confidently","Para 2: the hub-and-spoke architectural solution — knowledge graph as the governance gate","Para 3: the two simultaneous benefits — token cost reduction + hallucination elimination","Para 4: your PoC proof — one breached contract in the graph (service-mobile-contract), agent surfaces it correctly","Close: 'This is the architecture pattern for AI on migrated data platforms. Not RAG on raw data. Metadata-first routing.'","Target: 270-310 words. Audience: partners + delivery leads."],
+          eod:["Post 4 full draft exists","Hub-and-spoke frame is clear and named","service-mobile-contract referenced as real proof"]}]},
+      { name: "Thu", focus: "Post 4 routing diagram + final edit", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 4 — Diagram + Final Edit",
+          tasks:["Create the routing diagram in Canva: Agent Query → Knowledge Graph Check → Contract Status Gate → Approved/Blocked","Dark background, simple flow, 4 boxes, 3 arrows — clean and readable in LinkedIn feed","Edit Post 4 copy — check: does 'hub-and-spoke' appear naturally, not forced?","Add hashtags: #AgenticAI #DataGovernance #KnowledgeGraph #EnterpriseAI #DataMesh #DataArchitecture #Neo4j #SemanticArchitecture","Schedule for Tuesday Week 9 at 9:00am","Write first comment: 'The contract status check is live in the agent — waranara.com/agent'"],
+          eod:["Routing diagram created and attached","Post 4 scheduled for Wk 9 Tuesday","Week 8 on track"]}]},
+      { name: "Fri", focus: "Gate 3 approval card + Slack Block Kit", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Gate 3 Approval Card",
+          tasks:["Wire up the Block Kit approval card from your weekend design","In approval_handler.py: send_approval_card(domain_lead_id, product_name, gap_type, proposed_write)","Card shows: Product, Gap type, Owner reply, Proposed Neo4j write, Approve/Reject buttons","Handle button clicks: on Approve → call writeback.py, on Reject → update gap_queue status","Test end-to-end: trigger a gap → Gate 1 approve → send DM → parse reply → Gate 3 card → Approve → verify graph update","This is the full curation loop — if it works, Phase 2 core is done","Commit: feat: complete gate3 approval card and writeback loop"],
+          eod:["Full curation loop working end-to-end (even if rough)","Gate 1 → DM → reply → Gate 3 → writeback chain tested","The hardest Phase 2 milestone is done"]}]}
+    ]
+  },
+  {
+    num: 9, label: "Wk 9", phase: "p3",
+    phaseTitle: "Phase 3 — CCA-F Exam Week + Post 4 Live + Missing Role Post",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert2", label: "CCA-F", text: "Final exam prep. Sitting exam this week or Week 10." },
+      { type: "build", label: "Phase 2", text: "Nightly scan scheduler. Error handling hardened." },
+      { type: "li", label: "LinkedIn", text: "Post 4 live. Post 5 (Missing Role) drafted." }
+    ],
+    deliverables: [
+      "Post 4 live — engage + internal share",
+      "gap_detector.py runs on a schedule (cron or APScheduler)",
+      "Post 5 first draft — Data Product Governance Lead role",
+      "CCA-F exam either sat or confirmed for Week 10"
+    ],
+    weekend: "1.5h — Final CCA-F exam prep: redo your 5 risk scenarios, redo the full mock. If score ≥72% you're ready. The exam rewards production decision-making — trust your PoC experience.",
+    days: [
+      { name: "Mon", focus: "Nightly scan scheduler", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Nightly Scheduler",
+          tasks:["Add APScheduler to gap_detector.py: run the full scan nightly at 2am","pip install apscheduler --break-system-packages","Schedule: scheduler.add_job(run_gap_scan, 'cron', hour=2)","Add to api.py startup: start the scheduler when FastAPI launches","Test: trigger a manual run via an API endpoint GET /run-gap-scan","Log each run to a scan_log table: run_time, gaps_found, gaps_new","Commit: feat: nightly gap scan scheduler","Deploy to Railway: push to main, verify scheduler starts on Railway logs"],
+          eod:["APScheduler running in FastAPI on Railway","Manual trigger endpoint working","/run-gap-scan fires gap detection and logs results"]}]},
+      { name: "Tue", focus: "POST 4 LIVE — Agentic Grounding + request demo meeting", streams: ["li"],
+        sessions: [{time:"9:00am", type:"li", title:"🚀 Post 4 Live — Agentic Grounding Problem",
+          tasks:["9:00am: Post 4 publishes with routing diagram","Post first comment immediately","This is your partner-targeting post — watch for engagement from senior roles","Engage all comments with substance — this audience wants architecture conversation, not thanks","Internal action: if Shailesh responded to Post 3 outreach, follow up now: 'Would a 30-min demo to the delivery lead be useful?'","If no response yet: forward Post 4 with note: 'The architecture pattern in this post applies directly to the [programme] agentic use case scope.'"],
+          eod:["Post 4 live and engaged","Internal follow-up sent","Demo meeting requested if timing is right"]}]},
+      { name: "Wed", focus: "CCA-F final prep — scenario drills", streams: ["cert2"],
+        sessions: [{time:"8:00–9:00pm", type:"cert2", title:"CCA-F — Final Exam Prep",
+          tasks:["This is your last structured study session before the exam","Run through all 5 domain summaries in sequence — 10 min per domain","For each domain: what's the #1 exam trap? Write it down.","Domain 1 trap: checking completion by parsing assistant text instead of stop_reason","Domain 2 trap: too many tools causing reasoning overload — keep tool count minimal","Domain 3 trap: CLAUDE.md at project level overrides user level — know the hierarchy","Domain 4 trap: adding a stronger prompt to fix malformed JSON instead of a retry loop","Domain 5 trap: ignoring cache_control breakpoints, losing prompt caching savings","Read these 5 traps before entering the exam room"],
+          eod:["5 domain traps written and memorised","All domain summaries reviewed","Feeling confident — your PoC covers most scenarios"]}]},
+      { name: "Thu", focus: "Post 5 first draft — The Missing Role", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 5 Draft — Data Product Governance Lead",
+          tasks:["Post 5 names the role — this is your claim post","Opening: 'Every large data platform migration needs this role. Almost none staff it.'","Para 2: what it's NOT — not a committee chair, not a steward, not a data architect","Para 3: what it IS — 4 responsibilities: ODPS standard ownership, validation pipeline, knowledge graph, MCP server layer","MCP mention: 'The role owns the MCP tool layer — the knowledge graph exposed as a tool any Claude-powered agent can query for governance context' — this is subtle CCA-F Domain 2 signal","Para 4: why now — ODPS v4.0 is the standard, Phase 2 of your PoC implements it","Close: 'I'd argue this is the most important hire on a data mesh programme in 2026.'","Target: 300-320 words"],
+          eod:["Post 5 full draft exists","MCP layer mention is natural not forced","Role is clearly differentiated from traditional governance"]}]},
+      { name: "Fri", focus: "Error handling + Phase 2 hardening", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Hardening",
+          tasks:["Add try/except to all gap_detector.py database operations","Add retry logic to the Slack DM sender — if Slack API times out, retry after 30 seconds","Add a status endpoint GET /phase2-status that returns: last_scan_time, gaps_in_queue, pending_approvals","Test the full loop one more time end-to-end — from nightly scan trigger to graph writeback","Fix any edge cases found in testing","Update SDD v2.1: add Phase 2 architecture notes","Commit: feat: phase2 hardening and status endpoint"],
+          eod:["Error handling in place across all Phase 2 components","Status endpoint returns correct data","/phase2-status JSON verified on Railway"]}]}
+    ]
+  },
+  {
+    num: 10, label: "Wk 10", phase: "p3",
+    phaseTitle: "Phase 3 — CCA-F EXAM WEEK + Post 5 Published + Internal Brief",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "cert2", label: "CCA-F", text: "🎯 CCA-F EXAM — SIT AND PASS" },
+      { type: "li", label: "LinkedIn", text: "Post 5 published. Internal accelerator brief written." },
+      { type: "build", label: "Phase 2", text: "Observability — waranara.com/agent shows gap summary" }
+    ],
+    deliverables: [
+      "CCA-F Claude Certified Architect credential on LinkedIn ✓",
+      "Post 5 live — Data Product Governance Lead post",
+      "2-page internal Accenture accelerator brief written",
+      "Internal demo meeting with delivery lead requested"
+    ],
+    weekend: "1.5h — Write the 2-page internal Accenture accelerator brief: Problem / Solution / Proof / Applicability / Ask. This is the document Shailesh or a partner can circulate.",
+    days: [
+      { name: "Mon", focus: "CCA-F exam day (if booked for Monday)", streams: ["cert2"],
+        sessions: [{time:"Scheduled exam time", type:"cert2", title:"🎯 CCA-F Claude Certified Architect — EXAM",
+          tasks:["60 questions. 120 minutes. Online proctored. Passing score: 720/1000.","Before you start: read your 5 domain traps one final time","Question approach: every answer comes from 'what would I do in production?'","If unsure: eliminate answers that add complexity or layers. Correct answers fix root causes.","Domain 1 (27%): agentic loop, hub-and-spoke, stop_reason handling","Domain 2 (18%): MCP design, tool boundaries, SSE transport","Domain 3 (20%): CLAUDE.md hierarchy, CI/CD, persistent context","Domain 4 (20%): JSON schema, retry loops, few-shot","Domain 5 (15%): CALM, prompt caching, token budgeting","After passing: update LinkedIn profile immediately. Post a short announcement: '2 lines. CCA-F passed. One line on what it validates.'"],
+          eod:["CCA-F exam completed","If passed: credential on LinkedIn profile","Announcement post published (short — 2-3 sentences)"]}]},
+      { name: "Tue", focus: "Post 5 LIVE + internal brief start", streams: ["li","admin"],
+        sessions: [{time:"9:00am publish + 8pm work", type:"li", title:"🚀 Post 5 Live + Internal Brief",
+          tasks:["9:00am: Post 5 publishes — The Missing Role","Engage comments — this post will land with senior delivery people","8:00pm: Start the internal Accenture accelerator brief","Section 1: The Problem (governance retrofit cost on migrations)","Section 2: The Solution (knowledge graph pattern encoded during build)","Keep each section to 3 bullet points — this is an executive brief, not an SDD","Target: 2 pages in Word. Attach the architecture diagram."],
+          eod:["Post 5 live and engaged","Accelerator brief sections 1+2 drafted"]}]},
+      { name: "Wed", focus: "Internal brief complete + propose demo meeting", streams: ["admin"],
+        sessions: [{time:"8:00–9:00pm", type:"admin", title:"Internal Brief Complete + Demo Proposal",
+          tasks:["Complete accelerator brief sections 3+4: Proof (waranara.com/agent) and Applicability (Databricks/Fabric migrations)","Section 5: The Ask — 'Name this pattern as an Accenture accelerator. Staff the Data Product Governance Lead role on the next migration engagement.'","Polish the brief — one read-through for executive tone","Send to Shailesh with message: 'Wrote up the full case. 2 pages. Happy to present to [delivery lead name] in 30 minutes whenever convenient.'","Separately: ask Shailesh about internal speaking slots — Data & AI community event or practice tech talk"],
+          eod:["Accelerator brief sent to Shailesh","Internal demo meeting proposed","Speaking slot enquiry made"]}]},
+      { name: "Thu", focus: "Phase 2 — dashboard on waranara.com/agent", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — Gap Summary on UI",
+          tasks:["Add a gap summary section to waranara.com/agent UI","Call GET /phase2-status from the frontend on page load","Display: 'Last governance scan: [timestamp] · Gaps detected: [count] · Pending approvals: [count]'","This makes Phase 2 visible to anyone who visits the public demo","Matches the 'governance maturity dashboard' in SDD v2.1","Update agent.html in waranara.github.io repo — push to GitHub Pages","Test: visit waranara.com/agent and verify gap summary appears"],
+          eod:["Gap summary panel visible on waranara.com/agent","Phase 2 is now observable from the public UI","Demo now shows Phase 1 (Q&A) + Phase 2 (gap detection) simultaneously"]}]},
+      { name: "Fri", focus: "Post 5 edit + week 10 review", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 6 Outline — The Architect's Paradox",
+          tasks:["Post 6 is the closer — pure thought leadership, no video needed","Blend existing Post 6 (Architect's Paradox from linkedin_posts.md) with the certification close","Opening: 'Everyone is racing to better models. Almost nobody is making the data those models consume trustworthy.'","The core paradox: more capable models amplify bad data, they don't fix it","Close: 2 lines — 'Neo4j Certified Professional and CCA-F along the way. The certs validate the same thesis: the intelligence is in the graph.'","Image: OWL/RDF ontology XML in VS Code — the intellectual signal","Outline: 5 bullets + opening line"],
+          eod:["Post 6 outline complete with cert close","Certification mention is evidence, not announcement","Week 10 complete — two certs done, 5 posts live"]}]}
+    ]
+  },
+  {
+    num: 11, label: "Wk 11", phase: "p3",
+    phaseTitle: "Phase 3 — Phase 2 Polish + Post 6 + Internal Speaking",
+    hours: "5h weekday + 1.5h weekend",
+    goals: [
+      { type: "build", label: "Phase 2", text: "ODPS v4.0 validation pipeline (GitHub Actions) started" },
+      { type: "li", label: "LinkedIn", text: "Post 6 written and scheduled (Wk 12 Tuesday)" },
+      { type: "admin", label: "Internal", text: "Speaking slot confirmed or submitted" }
+    ],
+    deliverables: [
+      "Post 6 final copy scheduled for Week 12 Tuesday",
+      "GitHub Actions workflow skeleton for ODPS validation",
+      "Internal talk abstract submitted",
+      "SDD v2.1 updated with Phase 2 completion notes"
+    ],
+    weekend: "1.5h — ODPS v4.0 validation pipeline: write the GitHub Actions workflow YAML. Trigger: on push to main when dataproduct.yaml changes. Action: validate YAML against ODPS JSON schema.",
+    days: [
+      { name: "Mon", focus: "Phase 2 — ODPS validation pipeline design", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 Build — ODPS Validation Pipeline",
+          tasks:["Create .github/workflows/validate_odps.yml","Trigger: on push, paths: ['dataproduct.yaml']","Step 1: checkout repo","Step 2: install jsonschema Python library","Step 3: run a Python script that validates dataproduct.yaml against ODPS v4.0 JSON schema","Download the ODPS v4.0 JSON schema from opendataproducts.org/v4.0/schema/odps.yaml","Create a sample dataproduct.yaml for your Customer-360 product","This is the SDD v2.1 Phase 2 Sprint 6 deliverable — now building it","Commit: feat: ODPS v4.0 validation GitHub Actions workflow"],
+          eod:["GitHub Actions workflow file created","dataproduct.yaml sample created for Customer-360","Validation pipeline triggers on push"]}]},
+      { name: "Tue", focus: "Post 6 first draft — The Architect's Paradox", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 6 Draft — The Closer",
+          tasks:["Write Post 6 in full — this is your final post and your best writing","Opening line must be unforgettable: 'Everyone is racing to get better models. Almost nobody is making the data those models consume trustworthy.'","The core argument: model capability amplifies bad data, it doesn't fix it","The knowledge graph as the solution: encode meaning, not just structure","The migration window: this is the moment to get it right","Personal voice: '5 weeks. $25/month. One working system. The intelligence is in the graph.'","Close with certifications as evidence: 2 lines, factual, not boastful","Image: OWL/RDF XML in VS Code — intellectual, signals depth"],
+          eod:["Post 6 full draft exists","Certification close is natural and earned","Opening line is the best of the 6 posts"]}]},
+      { name: "Wed", focus: "Internal talk abstract", streams: ["admin"],
+        sessions: [{time:"8:00–9:00pm", type:"admin", title:"Internal Speaking — Abstract + Submission",
+          tasks:["Write a 200-word abstract for an internal Accenture tech talk","Title: 'Federated Computational Governance: A Working Reference Implementation for Data Platform Migrations'","Abstract: problem → solution pattern → live demo → enterprise applicability → Phase 2 roadmap","Submit to: Accenture Data & AI community of practice events calendar OR Shailesh to route","If no internal channel: propose directly to a delivery lead as a lunch-and-learn","Target audience in abstract: delivery leads, account partners, data architects"],
+          eod:["Talk abstract written and submitted","Target event or venue identified","Confirmation pending"]}]},
+      { name: "Thu", focus: "Post 6 edit + final polish", streams: ["li"],
+        sessions: [{time:"8:00–9:00pm", type:"li", title:"Post 6 — Edit + Schedule",
+          tasks:["Edit Post 6 — this post needs no video, just the VS Code screenshot","Read it aloud — thought leadership posts should sound like a keynote opener, not a blog post","Check: is the certification mention exactly 2 sentences? No more.","Add hashtags: #DataArchitecture #AI #KnowledgeGraph #Ontology #DataGovernance #AgenticAI #DataMesh #ThoughtLeadership #Neo4j #ClaudeAI","Schedule for Tuesday Week 12 at 9:00am","No first comment link needed for this post — let the ideas stand alone"],
+          eod:["Post 6 scheduled for Week 12 Tuesday","All 6 posts either published or scheduled","The 12-week content plan is complete"]}]},
+      { name: "Fri", focus: "SDD update + Phase 2 documentation", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"SDD v2.2 — Phase 2 Completion Notes",
+          tasks:["Update docs/solution_design_v2_2.docx (or create as .md)","Document what was built in Phase 2: gap_detector.py, approval_handler.py, writeback.py, scheduler","Document the 3-gate approval workflow as implemented — any deviations from SDD v2.1 plan?","Add the ODPS v4.0 validation pipeline section","Update the deployment architecture table with Phase 2 components","This document is your professional evidence — it should be as clean as SDD v2.1","Commit: docs: SDD v2.2 Phase 2 completion"],
+          eod:["SDD v2.2 created with Phase 2 documentation","Deviations from plan documented","GitHub repo reflects full Phase 2 architecture"]}]}
+    ]
+  },
+  {
+    num: 12, label: "Wk 12", phase: "p3",
+    phaseTitle: "Phase 3 — DONE. Phase 2 Live. Post 6. The Compound Effect.",
+    hours: "5h weekday",
+    goals: [
+      { type: "build", label: "Phase 2", text: "Phase 2 fully live on Railway. End-to-end demo working." },
+      { type: "li", label: "LinkedIn", text: "Post 6 live — The Closer. 6 posts complete." },
+      { type: "admin", label: "Outcome", text: "Internal demo delivered or booked. Compound effect established." }
+    ],
+    deliverables: [
+      "Post 6 live Tuesday — the compound closer",
+      "Phase 2 fully deployed on Railway — curation loop running",
+      "Neo4j cert ✓ + CCA-F ✓ both on LinkedIn profile",
+      "Internal demo delivered or speaking slot confirmed",
+      "waranara.com/agent shows Phase 1 + Phase 2 capabilities"
+    ],
+    weekend: "None required — you've earned it. Optional: celebrate with a Neo4j GraphAcademy t-shirt claim.",
+    days: [
+      { name: "Mon", focus: "Phase 2 final deploy + end-to-end test", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"Phase 2 — Production Deploy + Full Test",
+          tasks:["Run the complete Phase 2 flow one final time in production","Trigger: GET /run-gap-scan on Railway","Verify: gap_queue.db populates correctly","Simulate: Gate 1 approval → Slack DM sends → reply parsed → Gate 3 card → Approve → Neo4j write → writeback_log records","Verify: waranara.com/agent shows updated gap summary after writeback","Take a screen recording of the full loop — this is your Phase 2 demo video","Commit all final code. Tag the release: git tag v2.0-phase2-complete"],
+          eod:["Phase 2 fully operational in production","Full curation loop tested end-to-end","Release tagged on GitHub"]}]},
+      { name: "Tue", focus: "POST 6 LIVE — The Closer", streams: ["li"],
+        sessions: [{time:"9:00am publish", type:"li", title:"🚀 Post 6 Live — The Architect's Paradox",
+          tasks:["9:00am: Post 6 publishes — your best post, no video, just the idea","This post travels furthest — the algorithm rewards text-only thought leadership","Engage comments — this audience comments more substantively than earlier posts","Share internally: 'Final post in a 12-week series. This one summarises the core thesis.'","Review the full 6-post arc: what worked? What got the most reach? What surprised you?","Begin thinking about the next series — or the next campaign"],
+          eod:["Post 6 live — 12-week LinkedIn plan complete","6 posts published across 12 weeks","One post for every two weeks — exactly as planned"]}]},
+      { name: "Wed", focus: "Internal demo delivery (if booked)", streams: ["admin"],
+        sessions: [{time:"Scheduled", type:"admin", title:"Internal Demo — Delivery Leads / Partners",
+          tasks:["If demo is booked: deliver it today. 30 minutes. Demo-first, slides-last.","Open waranara.com/agent — type a governance question live","Show the Phase 2 gap summary panel — this is new from Phase 1","Walk through the curation loop: gap detected → Slack DM → approval → graph updated","The SDD v2.2 is the leave-behind — email it after the meeting","Close with the enterprise stack mapping: same pattern, Fabric IQ + Azure AI Foundry","If demo not yet booked: use this hour to follow up on speaking slot and re-propose"],
+          eod:["Internal demo delivered or rescheduled","SDD v2.2 sent as leave-behind","Next engagement opportunity identified"]}]},
+      { name: "Thu", focus: "Week 12 retrospective + Week 13 plan", streams: ["admin"],
+        sessions: [{time:"8:00–9:00pm", type:"admin", title:"12-Week Retrospective",
+          tasks:["Write a personal retrospective — 10 minutes, stream of consciousness","What did you actually build? (Phase 2, Phase 1 already done)","What credentials did you earn? (Neo4j ✓, CCA-F ✓)","What posts performed best? What would you do differently?","What's the next 12 weeks? Options: Neo4j Graph Data Science cert, Databricks Community Edition integration, Phase 3 observability, public repo open-source release","Write 3 priorities for weeks 13-24","This retrospective becomes content — it's the seed of your next LinkedIn series"],
+          eod:["12-week retrospective written","3 priorities for weeks 13-24 identified","Personal brand strategy updated"]}]},
+      { name: "Fri", focus: "Open-source prep + GitHub README update", streams: ["build"],
+        sessions: [{time:"8:00–9:00pm", type:"build", title:"GitHub — README + Open Source Prep",
+          tasks:["Update README.md to reflect Phase 2 completion","Add: architecture diagram (Phase 1 + Phase 2), quick start guide, live demo link","Add: the two certifications as context — 'Built as a learning accelerator alongside Neo4j and CCA-F certification'","Consider making the repo public — synthetic data only, no IP risk","If going public: add a CONTRIBUTING.md, check .gitignore for .env","A public repo with Phase 2 complete is a portfolio asset — it's the PoC anyone can fork","Final commit: docs: README Phase 2 complete — ready for community"],
+          eod:["README reflects full Phase 1 + Phase 2 architecture","Repo either public or public-ready","12-week plan complete ✓"]}]}
+    ]
+  }
+];
+
+// ─── RENDER ────────────────────────────────────────────────────────────────
+
+let currentWeek = 1;
+
+function renderWeekNav() {
+  const nav = document.getElementById('weekNav');
+  nav.innerHTML = WEEKS.map(w => `
+    <button class="week-btn ${w.num === currentWeek ? 'active' : ''}" onclick="selectWeek(${w.num})">
+      ${w.label}
+      <span class="phase-dot" style="background:${w.phase==='p1'?'#00b4d8':w.phase==='p2'?'#f97316':'#4ade80'}"></span>
+    </button>
+  `).join('');
+}
+
+function renderSidebar(w) {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = `
+    <div class="sidebar-title">Week ${w.num} Goals</div>
+    ${w.goals.map(g => `
+      <div class="week-goal-card ${g.type}">
+        <div class="goal-type">${g.label}</div>
+        <p>${g.text}</p>
+      </div>
+    `).join('')}
+    <div class="sidebar-title" style="margin-top:1.5rem">End-of-Week Deliverables</div>
+    <div class="deliverable-list">
+      ${w.deliverables.map(d => `<div class="deliverable">${d}</div>`).join('')}
+    </div>
+    ${w.weekend ? `
+      <div class="sidebar-title" style="margin-top:1.5rem">Weekend Session</div>
+      <div class="week-goal-card" style="border-left:3px solid var(--purple)">
+        <div class="goal-type" style="color:var(--purple)">+1.5h Optional</div>
+        <p style="font-size:0.78rem">${linkify(w.weekend)}</p>
+      </div>
+    ` : ''}
+  `;
+}
+
+function renderDays(w) {
+  const panel = document.getElementById('daysPanel');
+
+  const phaseColors = {p1:'var(--cert-neo)',p2:'var(--cert-claude)',p3:'var(--build)'};
+  const phaseLabels = {p1:'Weeks 1–4 · Neo4j + Foundation',p2:'Weeks 5–8 · CCA-F + Phase 2 Build',p3:'Weeks 9–12 · CCA-F Exam + Phase 2 Complete'};
+
+  const streamTagHTML = (streams) => streams.map(s => {
+    const labels = {cert:'NEO4J',cert2:'CCA-F',build:'BUILD',li:'LINKEDIN',admin:'ADMIN'};
+    return `<span class="stag ${s}">${labels[s]||s}</span>`;
+  }).join('');
+
+  const timeBadge = (day) => {
+    if (day.name === 'Sat' || day.name === 'Sun') return `<span class="time-badge wknd">WEEKEND</span>`;
+    if (day.sessions && day.sessions[0] && day.sessions[0].time.includes('am')) return `<span class="time-badge day">DAYTIME</span>`;
+    return `<span class="time-badge eve">8–9 PM</span>`;
+  };
+
+  const dayKey = (wNum, dIdx) => `w${wNum}d${dIdx}`;
+
+  panel.innerHTML = `
+    <div class="phase-banner ${w.phase}">
+      <div>
+        <div class="phase-label">${phaseLabels[w.phase]}</div>
+        <div class="phase-title">${w.phaseTitle}</div>
+      </div>
+      <div class="hours-used">${w.hours}</div>
+    </div>
+
+    ${w.days.map((day, dIdx) => `
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay('${dayKey(w.num,dIdx)}')">
+          <div class="day-label">
+            <div class="day-name">${day.name}</div>
+            <div class="day-date">Wk ${w.num}</div>
+          </div>
+          <div class="day-focus">${day.focus}</div>
+          <div class="day-meta">
+            ${timeBadge(day)}
+            <div class="stream-tags">${streamTagHTML(day.streams)}</div>
+            <span class="chevron" id="chev-${dayKey(w.num,dIdx)}">▾</span>
+          </div>
+        </div>
+        <div class="day-body" id="${dayKey(w.num,dIdx)}">
+          ${day.sessions.map(sess => `
+            <div class="session-block">
+              <div class="session-time">${sess.time}</div>
+              <div class="session-title ${sess.type}">${sess.title}</div>
+              <ul class="task-list">
+                ${sess.tasks.map((task, tIdx) => `
+                  <li class="task-item" id="task-${dayKey(w.num,dIdx)}-${tIdx}" onclick="toggleTask('task-${dayKey(w.num,dIdx)}-${tIdx}')">
+                    <span class="task-check">✓</span>
+                    <span>${linkify(task)}</span>
+                  </li>
+                `).join('')}
+              </ul>
+              ${sess.eod ? `
+                <div class="end-of-day">
+                  <div class="eod-label">✓ End of Session — You Should Have:</div>
+                  <ul>${sess.eod.map(e => `<li>${linkify(e)}</li>`).join('')}</ul>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ─── LINK PROCESSOR ──────────────────────────────────────────────────────────
+// Converts plain-text URLs and known keywords into clickable links
+
+const LINK_MAP = [
+  // Waranara
+  { pattern: /waranara\.com\/agent/g, url: 'https://waranara.com/agent', cls: 'green' },
+  { pattern: /waranara\.com\/planner/g, url: 'https://waranara.com/planner', cls: 'green' },
+  { pattern: /waranara\.com\/dashboard/g, url: 'https://waranara.com/dashboard', cls: 'green' },
+  // GraphAcademy
+  { pattern: /graphacademy\.neo4j\.com\/certifications\/neo4j-certification\//g, url: 'https://graphacademy.neo4j.com/certifications/neo4j-certification/', cls: '' },
+  { pattern: /graphacademy\.neo4j\.com\/certifications\//g, url: 'https://graphacademy.neo4j.com/certifications/', cls: '' },
+  { pattern: /graphacademy\.neo4j\.com/g, url: 'https://graphacademy.neo4j.com/', cls: '' },
+  { pattern: /GraphAcademy/g, url: 'https://graphacademy.neo4j.com/', cls: '' },
+  // Anthropic Partner Network
+  { pattern: /anthropic\.com\/news\/claude-partner-network/g, url: 'https://anthropic.com/news/claude-partner-network', cls: 'orange' },
+  { pattern: /Claude Partner Network/g, url: 'https://anthropic.com/news/claude-partner-network', cls: 'orange' },
+  // Anthropic docs
+  { pattern: /docs\.anthropic\.com\/en\/docs\/build-with-claude\/prompt-engineering\/overview/g, url: 'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview', cls: 'orange' },
+  { pattern: /docs\.anthropic\.com\/mcp/g, url: 'https://docs.anthropic.com/en/docs/build-with-claude/mcp', cls: 'orange' },
+  { pattern: /docs\.anthropic\.com\/en\/docs\/build-with-claude\/mcp/g, url: 'https://docs.anthropic.com/en/docs/build-with-claude/mcp', cls: 'orange' },
+  { pattern: /Anthropic's prompt engineering guide/g, url: 'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview', cls: 'orange' },
+  { pattern: /Anthropic's MCP documentation/g, url: 'https://docs.anthropic.com/en/docs/build-with-claude/mcp', cls: 'orange' },
+  // CCA-F resources
+  { pattern: /claudecertifiedarchitects\.com/g, url: 'https://www.claudecertifiedarchitects.com/blog/cca-foundations-exam-guide-2026/', cls: 'orange' },
+  { pattern: /Skilljar/g, url: 'https://anthropic.skilljar.com/', cls: 'orange' },
+  // Neo4j cert exam page
+  { pattern: /neo4j\.com\/graphacademy\/neo4j-certification/g, url: 'https://graphacademy.neo4j.com/certifications/neo4j-certification/', cls: '' },
+  // ODPS
+  { pattern: /opendataproducts\.org\/v4\.0\/schema\/odps\.yaml/g, url: 'https://opendataproducts.org/v4.0/schema/odps.yaml', cls: '' },
+  { pattern: /opendataproducts\.org/g, url: 'https://opendataproducts.org/', cls: '' },
+  // Canva
+  { pattern: /Canva \(free\)/g, url: 'https://www.canva.com', cls: '' },
+  { pattern: /canva\.com/g, url: 'https://www.canva.com', cls: '' },
+  // GitHub
+  { pattern: /github\.com\/sahrear-waranara\/data-mesh-intelligence-agent/g, url: 'https://github.com/sahrear-waranara/data-mesh-intelligence-agent', cls: '' },
+  // Railway
+  { pattern: /data-mesh-intelligence-agent-production\.up\.railway\.app/g, url: 'https://data-mesh-intelligence-agent-production.up.railway.app/', cls: '' },
+  // LinkedIn profile
+  { pattern: /linkedin\.com\/in\//g, url: 'https://www.linkedin.com/in/', cls: 'blue' },
+  // Notion
+  { pattern: /Google Doc or Notion/g, url: 'https://www.notion.so', cls: '' },
+  // Udemy CCA-F
+  { pattern: /Udemy practice set/g, url: 'https://www.udemy.com/course/claude-certified-architect-foundations-ccaf-exams/', cls: 'orange' },
+];
+
+function linkify(text) {
+  // Escape HTML first to avoid XSS
+  let safe = text
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+
+  // Apply link map — longest matches first to avoid partial replacements
+  const sorted = [...LINK_MAP].sort((a,b) => b.url.length - a.url.length);
+
+  // Use a placeholder system to avoid re-processing replaced text
+  const placeholders = [];
+  let result = safe;
+
+  sorted.forEach(({pattern, url, cls}) => {
+    result = result.replace(pattern, (match) => {
+      const idx = placeholders.length;
+      placeholders.push(`<a href="${url}" target="_blank" rel="noopener" class="task-link ${cls}" onclick="event.stopPropagation()">${match}</a>`);
+      return `\x00LINK${idx}\x00`;
+    });
+  });
+
+  // Restore placeholders
+  result = result.replace(/\x00LINK(\d+)\x00/g, (_, idx) => placeholders[parseInt(idx)]);
+
+  return result;
+}
+
+function selectWeek(num) {
+  currentWeek = num;
+  const w = WEEKS.find(x => x.num === num);
+  renderWeekNav();
+  renderSidebar(w);
+  renderDays(w);
+  updateProgress(num);
+}
+
+function toggleDay(id) {
+  const body = document.getElementById(id);
+  const chev = document.getElementById('chev-'+id);
+  body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open');
+}
+
+function toggleTask(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('done');
+}
+
+function updateProgress(wNum) {
+  const neoHrs = Math.min(12, wNum <= 4 ? wNum * 3 : 12);
+  const claudeHrs = Math.min(27, wNum <= 4 ? 0 : (wNum-4) * 4);
+  const buildHrs = Math.min(20, wNum <= 4 ? 0 : (wNum-4) * 3);
+  const posts = Math.min(6, Math.floor((wNum-1)/2));
+
+  const setRing = (id, val, max) => {
+    const circ = 88;
+    const el = document.getElementById(id);
+    if(el) el.setAttribute('stroke-dasharray', `${(val/max)*circ} ${circ}`);
+  };
+
+  setRing('neo-ring', neoHrs, 12);
+  setRing('claude-ring', claudeHrs, 27);
+  setRing('build-ring', buildHrs, 20);
+  setRing('li-ring', posts, 6);
+
+  const $ = id => document.getElementById(id);
+  if($('neo-prog')) $('neo-prog').textContent = `${neoHrs} / 12h`;
+  if($('claude-prog')) $('claude-prog').textContent = `${claudeHrs} / 27h`;
+  if($('build-prog')) $('build-prog').textContent = `${buildHrs} / 20h`;
+  if($('li-prog')) $('li-prog').textContent = `${posts} / 6`;
+}
+
+// Init
+selectWeek(1);
+</script>
+</body>
+</html>
